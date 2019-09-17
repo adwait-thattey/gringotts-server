@@ -9,6 +9,12 @@ exports.register = async (req, res) => {
         name, email, password
     });
 
+    // Check if the user already exist
+    const userExist = await User.findOne({ email });
+    if (userExist) {
+        return res.status(401).json({ err: "User with this email already exist" });
+    }
+
     try {
         await user.save();
         res.status(201).json({ success: "User successfully created" });
