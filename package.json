@@ -1,0 +1,23 @@
+{
+  "name": "gringotts-server",
+  "version": "1.0.0",
+  "description": "The node server and vault configuration of gringotts project",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adwait-thattey/gringotts-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adwait-thattey/gringotts-server/issues"
+  },
+  "homepage": "https://github.com/adwait-thattey/gringotts-server#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
