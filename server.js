@@ -8,7 +8,7 @@ const authRoutes = require('./auth/routes');
 
 // Connect to DB
 mongoose.connect(
-    "mongodb+srv://<username>:<password>@cluster0-dvjse.mongodb.net/test?retryWrites=true&w=majority", 
+    `mongodb+srv://${process.env.MONGO_ATLAS_USERNAME}:${process.env.MONGO_ATLAS_PASSWORD}@cluster0-dvjse.mongodb.net/test?retryWrites=true&w=majority`, 
     { useNewUrlParser: true, useUnifiedTopology: true },
     () => {
         console.log("connected to db");
