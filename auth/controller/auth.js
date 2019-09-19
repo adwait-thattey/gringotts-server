@@ -1,5 +1,7 @@
-const User = require('../model/user');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const User = require('../model/user');
 
 exports.register = async (req, res) => {
     const name = req.body.name;
@@ -46,5 +48,7 @@ exports.login = async (req, res) => {
         return res.status(400).json({ err: "Email or Password is wrong" });
     }
 
-    res.send('logged in');
+    // Create and assign token
+    const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, { expiresIn: 3600 });
+    res.header('auth-token', token).send(token);
 }
