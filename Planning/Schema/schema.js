@@ -73,7 +73,7 @@ schema =  {
                 aws: [
                     {
                         id: "<mongo id object>",
-                        verboseName: "Credentials",
+                        verboseName: "AWS",
                         type: "<String>",
                         vaultURL: "<URL String>",
                         mountPoint: "<String/URL>",
@@ -101,9 +101,50 @@ schema =  {
                         
                     }
                 ],
+                ssh: [
+                    {
+                        id: "<mongo id object>",
+                        verboseName: "SSH",
+                        type: "<String>",
+                        vaultURL: "<URL String>",
+                        mountPoint: "<String/URL>",
+
+                        CA_Configurations: {
+                            ca_config_url: "<String/URL>",
+                            ca_public_key_url: "<String/URL>"
+                        },
+
+                        roles: [
+                            {
+                                id: "<mongo id object>",
+                                verboseName: "<String>",
+                                path: "",
+
+                                max_ttl: "time in seconds",
+
+                                remote_machine_ip: "IP Address",
+                                remote_machine_username: "<String>",
+
+                                generated_keys: [
+                                    {
+                                        id: "<mongo id object>",
+                                        status: "Bool (valid/invalid)",
+                                        generated_on: "Date-Time Object",
+                                        expires_on: "Date-Time Object",
+                                        key_name: "<String>",
+                                        public_key: "<String>",
+                                        private_key: "<String>",
+                                        key_certificate: "<String>"
+
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
                 gcp: [],
                 gpg: [],
-                ssh: []
+
                 
             }
         }
