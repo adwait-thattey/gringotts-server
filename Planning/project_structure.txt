@@ -1,0 +1,28 @@
+--vault
+
+--auth
+
+--services
+
+    --credentials
+        --models, middlewares, controllers
+        -validation.js
+        -routes.js
+        -- utils.js
+
+A common model for engine, all services inherit from that model. This common model exists in vault folder
+different model for sub-category, provider
+A model for providers. Each key-value pair requires link to provider
+
+Models:
+    Abstract Engine Model
+    kv engine model
+    SubCategory
+    Provider
+    
+for credentials (utils.js):
+    a function that takes some parameters as compulsory like vault_path and others as *args and stores all in db
+    another function that takes vault path and secret. Then stores secret in vault.
+
+vault:
+    A function that can create any type of engine , takes type as parameter

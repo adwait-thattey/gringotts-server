@@ -9,7 +9,7 @@ schema =  {
             phone_number: "<String>",
             is_superuser : "<bool>",
             vault_role: "<vault role object>",
-            password: "<String>",
+            password: "<Hashed String>",
             profilePicture: "<String>",
             
             // engines
@@ -74,8 +74,8 @@ schema =  {
                     {
                         id: "<mongo id object>",
                         verboseName: "AWS",
-                        type: "<String>",
-                        vaultURL: "<URL String>",
+                        type: "aws",
+                        vaultURL: "IP Add of the vault",
                         mountPoint: "<String/URL>",
 
                         accountName: "",
@@ -142,9 +142,6 @@ schema =  {
                         ]
                     }
                 ],
-                gcp: [],
-                gpg: [],
-
                 
             }
         }
