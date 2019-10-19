@@ -1,0 +1,9 @@
+version: '3'
+services:
+  api:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./gringotts-server
+    volumes:
+      - /app/node_modules
+      - ./gringotts-server:/app
