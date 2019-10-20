@@ -21,7 +21,7 @@ The features of the application will be:
 ### SSH Keys
 
 * Configure your remote server / machine with the CA of application to accept keys signed by gringotts
-* Generate new ssh keys for your remote machine anytime anywhere with just a couple of clicks/taps
+* Generate new ssh keys for your remote machine anytime anywhere with just a couple of clicks
 * All generated keys come with short ttl. So no need to worry about losing your keys or leaving them on any other machine.
 * [This picture sums up the workflow](Planning/Images/ssh.png)
 
