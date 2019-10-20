@@ -16,7 +16,7 @@ The features of the application will be:
 
 * Configure the application with your AWS / GCP / Azure primary credentials. 
 * Generate new username-password or access-keys for your account on the fly.
-* Configure TTL for the newly generated credentials
+* Configure TTL and privileges for the newly generated credentials
 
 ### SSH Keys
 
