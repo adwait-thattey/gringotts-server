@@ -16,12 +16,12 @@ The features of the application will be:
 
 * Configure the application with your AWS / GCP / Azure primary credentials. 
 * Generate new username-password or access-keys for your account on the fly.
-* Configure TTL for the newly generated credentials
+* Configure TTL and privileges for the newly generated credentials
 
 ### SSH Keys
 
 * Configure your remote server / machine with the CA of application to accept keys signed by gringotts
-* Generate new ssh keys for your remote machine anytime anywhere with just a couple of clicks/taps
+* Generate new ssh keys for your remote machine anytime anywhere with just a couple of clicks
 * All generated keys come with short ttl. So no need to worry about losing your keys or leaving them on any other machine.
 * [This picture sums up the workflow](Planning/Images/ssh.png)
 
