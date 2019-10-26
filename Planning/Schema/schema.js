@@ -13,7 +13,6 @@ schema =  {
             profilePicture: "<String>",
             
             // engines
-
             engines : {
                 kv: [
                     {   
@@ -42,7 +41,7 @@ schema =  {
                                         email: "<Email Id String>",
                                         vaultKey: "<String>"
 
-                                        // service specic details
+                                        // service specific details
                                     }
                                 ]
                             },
@@ -63,7 +62,7 @@ schema =  {
                                         phoneNumber: "<Phone number>",
                                         vaultKey: "<String>"
 
-                                        // service specic details
+                                        // service specific details
                                     }
                                 ]
                             }
