@@ -1,3 +1,4 @@
+const config = require('../../config');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -47,7 +48,7 @@ exports.login = async (req, res) => {
             return res.status(400).json({ err: "Email or Password is wrong" });
         }
         // Create and assign token
-        const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, { expiresIn: 3600 });
+        const token = jwt.sign({ _id: user._id }, config.TOKEN_SECRET, { expiresIn: 3600 });
         res.header('auth-token', token).send(token);
 
     } catch(e) {

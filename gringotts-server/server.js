@@ -1,3 +1,4 @@
+const config = require('./config');
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -10,7 +11,7 @@ const authRoutes = require('./auth/routes');
 
 // Connect to DB
 mongoose.connect(
-    `mongodb+srv://${process.env.MONGO_ATLAS_USERNAME}:${process.env.MONGO_ATLAS_PASSWORD}@cluster0-dvjse.mongodb.net/test?retryWrites=true&w=majority`, 
+    `mongodb+srv://${config.mongo.username}:${config.mongo.password}@${config.mongo.host}/${config.mongo.dbname}?retryWrites=true&w=majority`,
     { useNewUrlParser: true, useUnifiedTopology: true },
     () => {
         console.log("connected to db");
@@ -22,5 +23,4 @@ app.use(express.json());
 
 // Route middlewares
 app.use('/api/auth', authRoutes);
-
-app.listen(8000, () => console.log("Server running"));
+app.listen(config.port, () => console.log(`Server running on ${config.port}`));
