@@ -19,7 +19,7 @@ Models:
     kv engine model
     SubCategory
     Provider
-    
+
 for credentials (utils.js):
     a function that takes some parameters as compulsory like vault_path and others as *args and stores all in db
     another function that takes vault path and secret. Then stores secret in vault.
