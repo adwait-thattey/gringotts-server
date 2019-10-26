@@ -1,4 +1,5 @@
 FROM node:alpine
+EXPOSE 8000
 WORKDIR /app
 COPY ./package.json ./
 RUN npm install
