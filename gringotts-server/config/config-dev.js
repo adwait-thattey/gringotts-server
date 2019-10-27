@@ -13,7 +13,7 @@ config.mongo = {
 
 config.vault = {
     "host":"127.0.0.1:8200",
-    "admin-token":"vault-token"
+    "adminToken":"vault-token"
 };
 
 config.TOKEN_SECRET="token_secret"
