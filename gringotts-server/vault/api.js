@@ -165,11 +165,61 @@ exports.getMountedEngines = async (user, type) => {
         path => path.startsWith(`gringotts-user/${user.username}/${type}`)
     );
     enginePaths = enginePaths.map(engine => engine.replace(`gringotts-user/${user.username}`, ''));
-    console.log(enginePaths);
+    // console.log(enginePaths);
+    return enginePaths;
+};
+
+const mountNewKVEngine = async (user, name) => {
+    let res;
+    try {
+        res = await axios.post(
+            url.resolve(config.vault.host, `sys/mounts/gringotts-user/${user.username}/kv/${name}`),
+            {
+                type: "kv",
+                description: "A new KV engine for User " + user.username
+            },
+            {
+                headers: rootHeaders,
+                validateStatus: false
+            }
+
+        )
+    }catch (err) {
+        vaultErrorHandler.handleErrorFromError(err)
+    }
+
+    // console.log(res);
+    vaultErrorHandler.handleErrorFromResponse(res);
+
+    if (res.status === 204) {
+        return {
+            type: "kv",
+            relativeMountPoint: name,
+            absoluteMountPoint: `/gringotts-user/${user.username}/kv/${name}`
+        }
+    }
+    else {
+        throw new errors.VaultError("Some error occured during mounting new engine")
+    }
 };
 
 exports.mountNewEngine = async (user, type) => {
+    // get list of existing engines on path
+    const engines  = await this.getMountedEngines(user, type);
+    const newEngineName = `eng${engines.length + 1}`;
 
+    switch (type) {
+        case "kv": {
+            return await mountNewKVEngine(user, newEngineName);
+        }
+
+        case "aws":
+        case "azure":
+        case "ssh": {
+            console.log("Not configured yet");
+            throw new errors.VaultError("Engine APIs not configured yet")
+        }
+    }
 }
 
 exports.makeVaultRequest = async (user, uri, type, payload, customHeaders, appendPath= true ) => {
