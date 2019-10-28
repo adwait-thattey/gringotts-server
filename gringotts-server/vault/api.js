@@ -25,7 +25,7 @@ exports.createUser = async (user) => {
             resolveWithFullResponse: true
         });
 
-    }catch (err) {
+    } catch (err) {
         vaultErrorHandler.handleErrorFromError(err);
     };
 

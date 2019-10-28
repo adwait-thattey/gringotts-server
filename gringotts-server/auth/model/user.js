@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const engineSchema = require('../../credentials/model/engine');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -22,7 +23,17 @@ const userSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now
-    }
+    },
+    phone_number: {
+        type: String,
+        required: true
+    },
+    is_superuser: {
+        type: Boolean,
+        required: true
+    },
+    profile_picture: String,
+    engines: [engineSchema]
 })
 
 module.exports = mongoose.model('User', userSchema);

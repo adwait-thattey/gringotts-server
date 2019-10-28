@@ -1,6 +1,7 @@
 const config = require('../../config');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const createUserEngines = require('../../credentials/utils/createUserEngines');
 
 const User = require('../model/user');
 
@@ -24,6 +25,7 @@ exports.register = async (req, res) => {
     });
 
     try {
+        user.engines = createUserEngines(); 
         await user.save();
         res.status(201).json({ success: "User successfully created" });
     } catch (e) {

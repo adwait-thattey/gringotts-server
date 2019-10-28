@@ -40,7 +40,7 @@ schema =  {
                                         vaultPath: "<URL String",
                                         email: "<Email Id String>",
                                         vaultKey: "<String>"
-
+                                        
                                         // service specific details
                                     }
                                 ]
