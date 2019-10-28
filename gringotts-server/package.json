@@ -20,13 +20,12 @@
   "homepage": "https://github.com/adwait-thattey/gringotts-server#readme",
   "dependencies": {
     "@hapi/joi": "^16.1.1",
+    "axios": "^0.19.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.5",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.4",
     "url": "^0.11.0"
   },
   "devDependencies": {
