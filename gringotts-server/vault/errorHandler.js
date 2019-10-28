@@ -1,7 +1,7 @@
 const errors = require('./vaultErrors');
 
 exports.handleErrorFromResponse = (res) => {
-    switch( res.statusCode) {
+    switch( res.status) {
         case 200:
         case 201:
         case 204: return true;
@@ -16,12 +16,14 @@ exports.handleErrorFromResponse = (res) => {
 
         case 503: throw new errors.VaultSealedError()
 
+        case 404: throw new errors.VaultNotFoundError();
+
     }
 };
 
 exports.handleErrorFromError = (err) => {
-    if (err.name === "RequestError") {
-        if (err.cause.code === "ETIMEDOUT" || err.cause.code === "ECONNREFUSED") {
+    if (err.isAxiosError === true) {
+        if (err.code === "ETIMEDOUT" || err.code === "ECONNREFUSED") {
             throw new errors.VaultNotInitialized();
         }
     }
