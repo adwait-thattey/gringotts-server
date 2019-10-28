@@ -2,13 +2,13 @@ const Joi = require('@hapi/joi');
 
 exports.registerValidate = async (req, res, next) => {
     const user = {
-        name: req.body.name,
+        username: req.body.username,
         email: req.body.email,
         password: req.body.password
     }
 
     const schema = Joi.object({
-        name: Joi.string().min(6).required(),
+        username: Joi.string().min(6).required(),
         email: Joi.string().min(6).required().email(),
         password: Joi.string().min(6).required()
     })
