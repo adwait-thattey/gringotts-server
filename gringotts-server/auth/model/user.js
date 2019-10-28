@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     profile_picture: String,
-    engines: [engineSchema]
+    engines: []
 })
 
 module.exports = mongoose.model('User', userSchema);
