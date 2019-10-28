@@ -8,7 +8,6 @@ dotenv.config();
 
 // Import Routes
 const authRoutes = require('./auth/routes');
-
 // Connect to DB
 mongoose.connect(
     `mongodb+srv://${config.mongo.username}:${config.mongo.password}@${config.mongo.host}/${config.mongo.dbname}?retryWrites=true&w=majority`,

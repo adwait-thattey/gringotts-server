@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const engineSchema = require('../../credentials/model/engine');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -24,10 +23,7 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    phone_number: {
-        type: String,
-        required: true
-    },
+    phone_number: String,
     is_superuser: {
         type: Boolean,
         required: true
