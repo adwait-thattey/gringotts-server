@@ -3,10 +3,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const createUserEngines = require('../../credentials/utils/createUserEngines');
 
+const vault = require('../../vault');
 const User = require('../model/user');
 
+const {VaultError} = vault.errors;
+
 exports.register = async (req, res) => {
-    const name = req.body.name;
+    const username = req.body.username;
     const email = req.body.email;
     const password = req.body.password;
 
@@ -21,16 +24,34 @@ exports.register = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, salt);
 
     const user = new User({
-        name, email, password: hashPassword, is_superuser: false
+        username, email, password: hashPassword, is_superuser: false
     });
 
     try {
         user.engines = createUserEngines(); 
         await user.save();
-        res.status(201).json({ success: "User successfully created" });
+
     } catch (e) {
         res.status(400).json(e);
     }
+
+    try {
+        await vault.api.createUser(user)
+    } catch (err) {
+        if( err instanceof vault.errors.VaultError) {
+            if (err instanceof vault.errors.VaultInternalError ) {
+                res.status(500).json({
+                    "message": "Internal Server Error",
+                })
+            }
+
+            res.status(err.status || 500).json({
+                "message": err.message
+            })
+        }
+    }
+
+    res.status(201).json({ success: "User successfully created" });
 }
 
 exports.login = async (req, res) => {

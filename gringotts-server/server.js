@@ -8,6 +8,9 @@ dotenv.config();
 
 // Import Routes
 const authRoutes = require('./auth/routes');
+const engineRoutes = require('./engine/routes');
+
+
 // Connect to DB
 mongoose.connect(
     `mongodb+srv://${config.mongo.username}:${config.mongo.password}@${config.mongo.host}/${config.mongo.dbname}?retryWrites=true&w=majority`,
@@ -22,4 +25,5 @@ app.use(express.json());
 
 // Route middlewares
 app.use('/api/auth', authRoutes);
+app.use('/engines', engineRoutes);
 app.listen(config.port, () => console.log(`Server running on ${config.port}`));

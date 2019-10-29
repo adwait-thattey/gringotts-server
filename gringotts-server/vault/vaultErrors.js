@@ -19,6 +19,8 @@ class VaultInternalError extends VaultError {
 class VaultNotInitialized extends VaultInternalError {
     constructor(message, data=null) {
         super(message || "Vault does not exist at location or is not initialized", data)
+
+        this.status = 500;
     }
 }
 class VaultSealedError extends VaultError {
@@ -30,12 +32,16 @@ class VaultSealedError extends VaultError {
 class VaultUserExistsError extends VaultError {
     constructor(message, data=null) {
         super(message || "A Vault user with this identity already exists", data)
+
+        this.status = 400;
     }
 }
 
 class VaultIncorrectCredentialsError extends VaultInternalError {
     constructor(message, data=null) {
         super(message || "Incorrect Password or user does not exist", data)
+
+        this.status = 401;
     }
 }
 
