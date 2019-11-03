@@ -24,7 +24,7 @@ const getVaultAuthAccessor = async () => {
             }
         )
 
-    }catch (err) {
+    } catch (err) {
         vaultErrorHandler.handleErrorFromError(err);
     };
 
@@ -103,7 +103,7 @@ exports.createUser = async (user) => {
             }
         )
 
-    }catch (err) {
+    } catch (err) {
         vaultErrorHandler.handleErrorFromError(err);
     };
 
@@ -132,7 +132,7 @@ exports.createUser = async (user) => {
             }
         )
 
-    }catch (err) {
+    } catch (err) {
         vaultErrorHandler.handleErrorFromError(err);
     }
 
@@ -231,16 +231,12 @@ exports.makeVaultRequest = async (user, uri, type, payload, customHeaders, appen
     }
 
     let res;
-    // console.log(user.username);
     let relativeUserEnginePath = `gringotts-user/${user.username}/`;
-    // console.log(relativeUserEnginePath);
     let finalURL = config.vault.host;
     if (appendPath) {
         finalURL = url.resolve(finalURL, relativeUserEnginePath);
     }
     finalURL = url.resolve(finalURL, uri);
-
-    // console.log(finalURL);
 
     try {
         res = await axios({
@@ -253,7 +249,7 @@ exports.makeVaultRequest = async (user, uri, type, payload, customHeaders, appen
             },
             validateStatus: false
         })
-    }catch (err) {
+    } catch (err) {
         vaultErrorHandler.handleErrorFromError(err);
     }
     vaultErrorHandler.handleErrorFromResponse(res);

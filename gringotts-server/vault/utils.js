@@ -4,9 +4,7 @@ const axios = require('axios');
 const url = require('url');
 const errorHandler = require('./errorHandler');
 const errors = require('./vaultErrors');
-// exports.makeVaultRequest = async (user, uri, headers, payload) => {
-//
-// };
+
 
 exports.getToken = async (user) => {
     let res;

@@ -11,7 +11,6 @@ const authRoutes = require('./auth/routes');
 const engineRoutes = require('./engine/routes');
 const credentialRoutes = require('./credentials/routes');
 
-
 // Middleware to authenticate token and add req.user
 const addToken = require('./middlewares/addAuthToken');
 
