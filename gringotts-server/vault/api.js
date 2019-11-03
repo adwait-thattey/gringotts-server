@@ -35,7 +35,7 @@ const getVaultAuthAccessor = async () => {
 };
 
 exports.createUser = async (user) => {
-  /* User object must contain at least username and password */
+    /* User object must contain at least username and password */
 
     // check if vault user already exists
     let res;

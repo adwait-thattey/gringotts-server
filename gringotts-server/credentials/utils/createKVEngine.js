@@ -1,29 +1,28 @@
 const config = require('../../config');
 
-module.exports = () => (
+module.exports = (verboseName, engineType, mountPoint) => (
     {
-        verboseName: "kv",
-        engineType: "kv",
-        vaultUrl: config.vault.host,
-        mountPoint: "mount",
+        verboseName,
+        engineType,
+        mountPoint,
 
         categories: [
             {
                 name: "email",
                 verboseName: "Email Service",
-                vaultPath: `${config.vault.host}/email`,
+                vaultPath: `email`,
                 creds: []
             },
             {
                 name: "social_media",
                 verboseName: "Social Media",
-                vaultPath: `${config.vault.host}/social_media`,
+                vaultPath: `social_media`,
                 creds: []
             },
             {
                 name: "entertainment",
                 verboseName: "Entertainment",
-                vaultPath: `${config.vault.host}/entertainment`,
+                vaultPath: `entertainment`,
                 creds: []
             }
         ]
