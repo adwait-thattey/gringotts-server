@@ -1,12 +1,11 @@
 const config = require('../../config');
 
-module.exports = () => (
+module.exports = (verboseName, engineType, mountPoint, accountName) => (
     {
-        verboseName: "aws",
-        engineType: "aws",
-        vaultUrl: config.vault.host,
-        mountPoint: "mount",
-        accountName: "",
+        verboseName,
+        engineType,
+        mountPoint,
+        accountName,
     
         roles : []
     }

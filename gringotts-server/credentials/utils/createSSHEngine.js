@@ -1,17 +1,17 @@
 const config = require('../../config');
 
-module.exports = () => (
+module.exports = (verboseName, engineType, mountPoint, accountName, CA_Configurations) => (
     {
-        verboseName: "ssh",
-        engineType: "ssh",
+        verboseName,
+        engineType,
         vaultUrl: config.vault.host,
-        mountPoint: "mount",
-        accountName: "",
-    
-        CA_Configurations: {
-            ca_config_url: "<String/URL>",
-            ca_public_key_url: "<String/URL>"
-        },
+        mountPoint,
+        accountName,
+        CA_Configurations,
+        // CA_Configurations: {
+        //     ca_config_url: "<String/URL>",
+        //     ca_public_key_url: "<String/URL>"
+        // },
         roles : []
     }
 )
