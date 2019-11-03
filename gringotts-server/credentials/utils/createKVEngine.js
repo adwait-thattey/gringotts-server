@@ -10,19 +10,16 @@ module.exports = (verboseName, engineType, mountPoint) => (
             {
                 name: "email",
                 verboseName: "Email Service",
-                vaultPath: `email`,
                 creds: []
             },
             {
                 name: "social_media",
                 verboseName: "Social Media",
-                vaultPath: `social_media`,
                 creds: []
             },
             {
                 name: "entertainment",
                 verboseName: "Entertainment",
-                vaultPath: `entertainment`,
                 creds: []
             }
         ]
