@@ -15,6 +15,7 @@ exports.register = async (req, res) => {
 
     // Check if the user already exist
     const userExist = await User.findOne({ email });
+
     if (userExist) {
         return res.status(401).json({ err: "User with this email already exist" });
     }
@@ -30,11 +31,9 @@ exports.register = async (req, res) => {
     try {
         user.engines = createUserEngines(); 
         await user.save();
-
     } catch (e) {
         res.status(400).json(e);
     }
-
     try {
         await vault.api.createUser(user)
     } catch (err) {
@@ -50,7 +49,6 @@ exports.register = async (req, res) => {
             })
         }
     }
-
     res.status(201).json({ success: "User successfully created" });
 }
 

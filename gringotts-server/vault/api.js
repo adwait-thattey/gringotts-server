@@ -154,7 +154,7 @@ exports.getMountedEngines = async (user, type) => {
             }
         )
 
-    }catch (err) {
+    } catch (err) {
         vaultErrorHandler.handleErrorFromError(err);
     }
 
@@ -165,7 +165,6 @@ exports.getMountedEngines = async (user, type) => {
         path => path.startsWith(`gringotts-user/${user.username}/${type}`)
     );
     enginePaths = enginePaths.map(engine => engine.replace(`gringotts-user/${user.username}`, ''));
-    // console.log(enginePaths);
     return enginePaths;
 };
 
@@ -184,7 +183,7 @@ const mountNewKVEngine = async (user, name) => {
             }
 
         )
-    }catch (err) {
+    } catch (err) {
         vaultErrorHandler.handleErrorFromError(err)
     }
 

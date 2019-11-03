@@ -9,7 +9,11 @@ dotenv.config();
 // Import Routes
 const authRoutes = require('./auth/routes');
 const engineRoutes = require('./engine/routes');
+const credentialRoutes = require('./credentials/routes');
 
+
+// Middleware to authenticate token and add req.user
+const addToken = require('./middlewares/addAuthToken');
 
 // Connect to DB
 mongoose.connect(
@@ -23,7 +27,12 @@ mongoose.connect(
 // Middleware
 app.use(express.json());
 
+// Add Auth Token
+app.use(addToken);
+
 // Route middlewares
 app.use('/api/auth', authRoutes);
 app.use('/engines', engineRoutes);
+app.use('/creds', credentialRoutes);
+
 app.listen(config.port, () => console.log(`Server running on ${config.port}`));
