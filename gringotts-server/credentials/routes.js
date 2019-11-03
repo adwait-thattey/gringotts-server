@@ -1,8 +1,9 @@
 const router = require('express').Router();
-const { addCustomCategory } = require('./controllers/engine');
+const { addCustomCategory, createCreds } = require('./controllers/engine');
 
 // router.get('/engines', );
 // router.get('/engines/:cred_engine_type/types', );
 router.post('/category/:engineName', addCustomCategory);
+router.post('/:engineName/:categoryName', createCreds)
 
 module.exports = router;

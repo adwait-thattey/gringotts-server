@@ -1,5 +1,6 @@
 const { getMountedEngines } = require('../../vault/api');
 const User = require('../../auth/model/user');
+const url = require('url');
 
 exports.getCredEngine = async (req, res) => {
     try {
@@ -32,3 +33,25 @@ exports.addCustomCategory = async (req, res) => {
     }
 }
 
+exports.createCreds = async (req, res) => {
+    const engineName = req.query.engineName;
+    const categoryName = req.query.categoryName;
+
+    const credName = req.body.credName;
+    const credValue = req.body.credValue;
+
+    try {
+        const engine = req.user.engines.find(engine => engine.verboseName === engineName);
+        const category = engine.categories.find(category => category.name === categoryName);
+    
+        category.creds.push({
+            credName,
+            credValue,
+            path: url.resolve(engineName, categoryName, credName)
+        })
+
+        await req.user.save();
+    } catch(e) {
+        return res.status(500).send(e);
+    }
+}
