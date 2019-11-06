@@ -12,23 +12,36 @@ exports.getCredEngine = async (req, res) => {
 }
 
 exports.addCustomCategory = async (req, res) => {
-    const engineName = req.query.engineName;
+    const engineName = req.params.engineName;
 
     const categoryName = req.body.categoryName;
     const verboseName = req.body.verboseName;
 
+    const dataObj = {
+        name: categoryName,
+        verboseName,
+        creds: []
+    };
+
     try {
+
+        await User.updateOne(
+            { _id: req.user._id, "engines.verboseName": engineName },
+            {
+                $push: {
+                    "engines.$.categories": dataObj
+                }
+            }
+        )
+
         // "find" returns the reference to the object
         // Hence updating it will update the original object
-        let engine = req.user.engines.find(engine => engine.name === engineName);
 
-        // As "name" field must be unique, verify no category with given name exist
-        const engineNames = engine.categories.filter(category => category.name === categoryName);
-        if (engineNames.length > 0) return res.status(500).send("Given Name already exists");
-
-        engine.categories.push({ name: categoryName, verboseName, creds: [] });
-        await req.user.save();
-    } catch(e) {
+        return res.status(200).json({
+            success: "New category successfully added",
+            dataObj
+        })
+    } catch (e) {
         return res.status(500).send("error");
     }
 }
@@ -43,7 +56,7 @@ exports.createCreds = async (req, res) => {
     try {
         const engine = req.user.engines.find(engine => engine.verboseName === engineName);
         const category = engine.categories.find(category => category.name === categoryName);
-    
+
         category.creds.push({
             credName,
             credValue,
@@ -51,7 +64,7 @@ exports.createCreds = async (req, res) => {
         })
 
         await req.user.save();
-    } catch(e) {
+    } catch (e) {
         return res.status(500).send(e);
     }
 }
