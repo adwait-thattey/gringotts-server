@@ -25,6 +25,16 @@ exports.addCustomCategory = async (req, res) => {
 
     try {
 
+        const response = await User.findOne(
+            { engines: { $elemMatch: { verboseName: "kv2" } } },
+            { "engines.$.categories": 1 }
+        );
+
+        const duplicates = response.engines[0].categories.find(category => category.name === categoryName);
+        if (duplicates !== undefined) {
+            return res.status(400).send("Category name already exists");
+        }
+
         await User.updateOne(
             { _id: req.user._id, "engines.verboseName": engineName },
             {
@@ -33,9 +43,6 @@ exports.addCustomCategory = async (req, res) => {
                 }
             }
         )
-
-        // "find" returns the reference to the object
-        // Hence updating it will update the original object
 
         return res.status(200).json({
             success: "New category successfully added",
