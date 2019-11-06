@@ -32,21 +32,21 @@ exports.register = async (req, res) => {
     } catch (e) {
         res.status(400).json(e);
     }
-    try {
-        await vault.api.createUser(user)
-    } catch (err) {
-        if( err instanceof vault.errors.VaultError) {
-            if (err instanceof vault.errors.VaultInternalError ) {
-                res.status(500).json({
-                    "message": "Internal Server Error",
-                })
-            }
+    // try {
+    //     await vault.api.createUser(user)
+    // } catch (err) {
+    //     if( err instanceof vault.errors.VaultError) {
+    //         if (err instanceof vault.errors.VaultInternalError ) {
+    //             res.status(500).json({
+    //                 "message": "Internal Server Error",
+    //             })
+    //         }
 
-            res.status(err.status || 500).json({
-                "message": err.message
-            })
-        }
-    }
+    //         res.status(err.status || 500).json({
+    //             "message": err.message
+    //         })
+    //     }
+    // }
     res.status(201).json({ success: "User successfully created" });
 }
 

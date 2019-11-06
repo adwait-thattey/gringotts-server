@@ -31,7 +31,7 @@ app.use(addToken);
 
 // Route middlewares
 app.use('/api/auth', authRoutes);
-app.use('/engines', engineRoutes);
-app.use('/creds', credentialRoutes);
+app.use('/api/engine', engineRoutes);
+app.use('/api/creds', credentialRoutes);
 
 app.listen(config.port, () => console.log(`Server running on ${config.port}`));
