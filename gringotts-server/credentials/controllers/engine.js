@@ -1,6 +1,7 @@
 const { getMountedEngines } = require('../../vault/api');
 const User = require('../../auth/model/user');
 const url = require('url');
+const { createCredsObj } = require('../utils');
 
 exports.getCredEngine = async (req, res) => {
     try {
@@ -54,23 +55,41 @@ exports.addCustomCategory = async (req, res) => {
 }
 
 exports.createCreds = async (req, res) => {
-    const engineName = req.query.engineName;
-    const categoryName = req.query.categoryName;
+    const engineName = req.params.engineName;
+    const categoryName = req.params.categoryName;
 
     const credName = req.body.credName;
     const credValue = req.body.credValue;
+    // For social_media phone may be needed field
+    const phone = req.body.phone;
 
     try {
-        const engine = req.user.engines.find(engine => engine.verboseName === engineName);
-        const category = engine.categories.find(category => category.name === categoryName);
+        // Finding the engine
+        const userInfo = await User.findOne(
+            { "engines.verboseName": engineName },
+            { "engines.$.categories": 1 }
+        )
+        if (userInfo.engines.length === 0) {
+            return res.status(404).send("No engine with this name was found");
+        }
+        // Getting the category from engine
+        const category = userInfo.engines[0].categories.find(category => category.name === categoryName);
+        
+        if (!category) {
+            return res.status(404).send("No category with this name was found");
+        }
+        
+        const credObj = createCredsObj(userInfo.engines[0].engineType, {
+            engineName, categoryName, credName, phone
+        });
 
-        category.creds.push({
-            credName,
-            credValue,
-            path: url.resolve(engineName, categoryName, credName)
-        })
+        await User.updateOne (
+            { "_id": req.user._id }, 
+            { $push: { "engines.$[engine].categories.$[category].creds": credObj }}, 
+            { "arrayFilters": [{"engine.verboseName": engineName}, { "category.name": categoryName }]}
+        )
 
-        await req.user.save();
+        res.status(200).send("Mast Mast");
     } catch (e) {
         return res.status(500).send(e);
     }

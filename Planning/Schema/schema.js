@@ -37,7 +37,7 @@ schema =  {
                                     {
                                         id: "<mongo id object>",
                                         serviceId: "<Link to specific details>",
-                                        vaultPath: "<URL String",
+                                        vaultPath: "<URL String>",
                                         email: "<Email Id String>",
                                         vaultKey: "<String>"
                                         
