@@ -1,6 +1,5 @@
 const { getMountedEngines } = require('../../vault/api');
 const User = require('../../auth/model/user');
-const url = require('url');
 const { createCredsObj } = require('../utils');
 
 exports.getCredEngine = async (req, res) => {
@@ -66,7 +65,12 @@ exports.deleteCategory = async (req, res) => {
         )
 
         const categories = userInfo.engines[0].categories;
-        const { name } = categories.find(category => category.name === categoryName);
+
+        const { name, creds } = categories.find(category => category.name === categoryName);
+
+        if (creds.length > 0) {
+            return res.status(404).send("Delete all credentials before deleting category");
+        }
 
         await User.updateOne(
             { _id: req.user._id },
@@ -129,6 +133,7 @@ exports.createCreds = async (req, res) => {
         if (userInfo.engines.length === 0) {
             return res.status(404).send("No engine with this name was found");
         }
+        
         // Getting the category from engine
         const category = userInfo.engines[0].categories.find(category => category.name === categoryName);
         
