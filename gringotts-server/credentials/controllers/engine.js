@@ -54,12 +54,69 @@ exports.addCustomCategory = async (req, res) => {
     }
 }
 
+exports.deleteCategory = async (req, res) => {
+    const engineName = req.params.engineName;
+
+    const categoryName = req.body.categoryName;
+
+    try {
+        const userInfo = await User.findOne(
+            { _id: req.user._id, "engines.verboseName": engineName },
+            { "engines.$.categories": 1 }
+        )
+
+        const categories = userInfo.engines[0].categories;
+        const { name } = categories.find(category => category.name === categoryName);
+
+        await User.updateOne(
+            { _id: req.user._id },
+            { $pull: { "engines.$[engine].categories": { name } } },
+            { arrayFilters: [ { "engine.verboseName": engineName } ] },
+        )
+
+        return res.status(200).send("Creds successfully removed")
+    } catch(e) {
+        return res.status(500).send(e);
+    }
+}
+
+
+
+exports.getCreds = async (req, res) => {
+    const engineName = req.params.engineName;
+    const categoryName = req.params.categoryName;
+    const credName = req.body.credName;
+
+    try {
+        const userInfo = await User.findOne(
+            { _id: req.user._id, "engines.verboseName": engineName },
+            { "engines.$.categories": 1 }
+        )
+
+        const category = userInfo.engines[0].categories.find(category => category.name === categoryName);
+        if (!category) {
+            return res.status(404).send("No category with this name was found");
+        }
+
+        const { vaultPath } = category.creds.find(cred => cred.credName === credName);
+        if (!vaultPath) {
+            return res.status(404).send("No credentials found");
+        }
+
+        // TODO Call vault API to get data from vaultPath
+        return res.status(200).json({ vaultPath });
+    } catch(e) {
+        res.status(500).send(e);
+    }
+}
+
 exports.createCreds = async (req, res) => {
     const engineName = req.params.engineName;
     const categoryName = req.params.categoryName;
 
     const credName = req.body.credName;
     const credValue = req.body.credValue;
+
     // For social_media phone may be needed field
     const phone = req.body.phone;
 
@@ -78,7 +135,12 @@ exports.createCreds = async (req, res) => {
         if (!category) {
             return res.status(404).send("No category with this name was found");
         }
-        
+
+        const duplicateCred = category.creds.find(cred => cred === credName);
+        if (duplicateCred) {
+            return res.status(400).send("Given Cred Name already exists, choose another one");
+        }
+
         const credObj = createCredsObj(userInfo.engines[0].engineType, {
             engineName, categoryName, credName, phone
         });
@@ -91,6 +153,23 @@ exports.createCreds = async (req, res) => {
 
         res.status(200).send("Mast Mast");
     } catch (e) {
+        return res.status(500).send(e);
+    }
+}
+
+exports.removeCreds = async (req, res) => {
+    const engineName = req.params.engineName;
+    const categoryName = req.params.categoryName;
+    const credName = req.body.credName;
+    try {
+        await User.updateOne(
+            { _id: req.user._id },
+            { $pull: { "engines.$[engine].categories.$[category].creds": { "credName": credName } } },
+            { arrayFilters: [ { "engine.verboseName": engineName }, { "category.name": categoryName } ] }
+        )
+
+        return res.status(200).send("Creds successfully removed")
+    } catch(e) {
         return res.status(500).send(e);
     }
 }
