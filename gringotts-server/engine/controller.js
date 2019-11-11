@@ -39,6 +39,9 @@ exports.createNewEngine = async (req, res) => {
                 break;
         }
 
+        // MOUNT ENGINE IN VAULT
+        await vault.api.mountNewEngine(req.user, engineType);
+
 
         await User.updateOne(
             { _id: req.user._id },

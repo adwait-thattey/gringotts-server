@@ -6,7 +6,7 @@ module.exports = (verboseName, engineType, mountPoint, accountName) => (
         engineType,
         mountPoint,
         accountName,
-    
-        roles : []
+        createdAt: new Date(),
+        roles : [],
     }
 )

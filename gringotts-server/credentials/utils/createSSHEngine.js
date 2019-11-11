@@ -12,6 +12,7 @@ module.exports = (verboseName, engineType, mountPoint, accountName, CA_Configura
         //     ca_config_url: "<String/URL>",
         //     ca_public_key_url: "<String/URL>"
         // },
-        roles : []
+        roles : [],
+        createdAt: new Date()
     }
 )

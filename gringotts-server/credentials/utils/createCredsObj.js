@@ -4,7 +4,8 @@ module.exports = (credType, { engineName, categoryName, credName, phone }) => {
     let dataObj = {
         _id: mongoose.Types.ObjectId(),
         vaultPath: `/creds/${engineName}/${categoryName}/${credName}`,
-        credName
+        credName,
+        createdAt: new Date()
     };
     
     switch(credType) {
