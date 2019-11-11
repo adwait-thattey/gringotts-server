@@ -1,5 +1,6 @@
 const { getMountedEngines } = require('../../vault/api');
 const User = require('../../auth/model/user');
+const vault = require('../../vault/api');
 const { createCredsObj } = require('../utils');
 
 exports.getCredEngine = async (req, res) => {
@@ -15,18 +16,18 @@ exports.addCustomCategory = async (req, res) => {
     const engineName = req.params.engineName;
 
     const categoryName = req.body.categoryName;
-    const verboseName = req.body.verboseName;
+    const name = req.body.name;
 
     const dataObj = {
         name: categoryName,
-        verboseName,
+        name,
         creds: []
     };
 
     try {
 
         const response = await User.findOne(
-            { engines: { $elemMatch: { verboseName: "kv2" } } },
+            { engines: { $elemMatch: { name: "kv2" } } },
             { "engines.$.categories": 1 }
         );
 
@@ -36,7 +37,7 @@ exports.addCustomCategory = async (req, res) => {
         }
 
         await User.updateOne(
-            { _id: req.user._id, "engines.verboseName": engineName },
+            { _id: req.user._id, "engines.name": engineName },
             {
                 $push: {
                     "engines.$.categories": dataObj
@@ -55,12 +56,11 @@ exports.addCustomCategory = async (req, res) => {
 
 exports.deleteCategory = async (req, res) => {
     const engineName = req.params.engineName;
-
     const categoryName = req.body.categoryName;
 
     try {
         const userInfo = await User.findOne(
-            { _id: req.user._id, "engines.verboseName": engineName },
+            { _id: req.user._id, "engines.name": engineName },
             { "engines.$.categories": 1 }
         )
 
@@ -75,7 +75,7 @@ exports.deleteCategory = async (req, res) => {
         await User.updateOne(
             { _id: req.user._id },
             { $pull: { "engines.$[engine].categories": { name } } },
-            { arrayFilters: [ { "engine.verboseName": engineName } ] },
+            { arrayFilters: [ { "engine.name": engineName } ] },
         )
 
         return res.status(200).send("Creds successfully removed")
@@ -93,7 +93,7 @@ exports.getCreds = async (req, res) => {
 
     try {
         const userInfo = await User.findOne(
-            { _id: req.user._id, "engines.verboseName": engineName },
+            { _id: req.user._id, "engines.name": engineName },
             { "engines.$.categories": 1 }
         )
 
@@ -107,8 +107,10 @@ exports.getCreds = async (req, res) => {
             return res.status(404).send("No credentials found");
         }
 
-        // TODO Call vault API to get data from vaultPath
-        return res.status(200).json({ vaultPath });
+        // user, uri, type, payload, customHeaders, appendPath=true
+        const { data } = await vault.makeVaultRequest(req.user, vaultPath, "GET");
+
+        return res.status(200).json({ data });
     } catch(e) {
         res.status(500).send(e);
     }
@@ -127,7 +129,7 @@ exports.createCreds = async (req, res) => {
     try {
         // Finding the engine
         const userInfo = await User.findOne(
-            { "engines.verboseName": engineName },
+            { "engines.name": engineName },
             { "engines.$.categories": 1 }
         )
         if (userInfo.engines.length === 0) {
@@ -150,10 +152,12 @@ exports.createCreds = async (req, res) => {
             engineName, categoryName, credName, phone
         });
 
+        const { data } = await vault.makeVaultRequest(req.user, vaultPath, "POST");
+
         await User.updateOne (
             { "_id": req.user._id }, 
             { $push: { "engines.$[engine].categories.$[category].creds": credObj }}, 
-            { "arrayFilters": [{"engine.verboseName": engineName}, { "category.name": categoryName }]}
+            { "arrayFilters": [{"engine.name": engineName}, { "category.name": categoryName }]}
         )
 
         res.status(200).send("Mast Mast");
@@ -170,7 +174,7 @@ exports.removeCreds = async (req, res) => {
         await User.updateOne(
             { _id: req.user._id },
             { $pull: { "engines.$[engine].categories.$[category].creds": { "credName": credName } } },
-            { arrayFilters: [ { "engine.verboseName": engineName }, { "category.name": categoryName } ] }
+            { arrayFilters: [ { "engine.name": engineName }, { "category.name": categoryName } ] }
         )
 
         return res.status(200).send("Creds successfully removed")

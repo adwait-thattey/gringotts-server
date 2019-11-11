@@ -2,10 +2,9 @@ const config = require('../../config');
 
 module.exports = (verboseName, engineType, mountPoint, accountName, CA_Configurations) => (
     {
-        verboseName,
+        name: mountPoint,
         engineType,
         vaultUrl: config.vault.host,
-        mountPoint,
         accountName,
         CA_Configurations,
         // CA_Configurations: {

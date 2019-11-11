@@ -1,10 +1,9 @@
 const config = require('../../config');
 
-module.exports = (verboseName, engineType, mountPoint) => (
+module.exports = (engineType, mountPoint) => (
     {
-        verboseName,
+        name: mountPoint,
         engineType,
-        mountPoint,
         categories: [],
         createdAt: new Date()
     }
