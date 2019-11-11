@@ -208,10 +208,7 @@ exports.mountNewEngine = async (user, type) => {
     const newEngineName = `eng${engines.length + 1}`;
 
     switch (type) {
-        case "kv": {
-            return await mountNewKVEngine(user, newEngineName);
-        }
-
+        case "kv": return await mountNewKVEngine(user, newEngineName)
         case "aws":
         case "azure":
         case "ssh": {
@@ -221,12 +218,11 @@ exports.mountNewEngine = async (user, type) => {
     }
 }
 
-exports.makeVaultRequest = async (user, uri, type, payload, customHeaders, appendPath= true ) => {
+exports.makeVaultRequest = async (user, uri, type, payload, customHeaders, appendPath=true ) => {
     type = type.toLowerCase();
 
     let vaultToken = localStorage.fetchToken(user.username);
     if (!vaultToken) {
-        console.log("fetch token from utils");
         vaultToken = await utils.getToken(user);
     }
 
