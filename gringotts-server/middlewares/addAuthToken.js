@@ -8,7 +8,7 @@ module.exports = async (req, res, next) => {
     // Removing 'Bearer '
     const decoded = jwt.decode(authToken.substring(7));
 
-    const user = await User.findById(decoded._id, 'username email _id');
+    const user = await User.findById(decoded._id, 'username email _id password');
     req.user = user;
     next();
 }

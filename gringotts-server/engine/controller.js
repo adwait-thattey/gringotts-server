@@ -4,8 +4,6 @@ const User = require('../auth/model/user');
 
 exports.createNewEngine = async (req, res) => {
     const engineType = req.params.engine_type;
-
-    
     const CA_Configurations = req.body.CA_Configurations;
     const accountName = req.body.accountName;
 
@@ -15,24 +13,24 @@ exports.createNewEngine = async (req, res) => {
         let engineInfo;
 
         // Making sure engine name is unique
-        const verboseNames = await User.find({ _id: req.user._id }).distinct('engines.verboseName');
+        const verboseNames = await User.find({ _id: req.user._id }).distinct('engines.name');
         
-        if (verboseNames.includes(engineName)) {
+        // MOUNT ENGINE IN VAULT
+        const { relativeMountPoint:autoEngName } = await vault.api.mountNewEngine(req.user, engineType);
+        if (verboseNames.includes(autoEngName)) {
             return res.status(400).send("Given engine name already exists");
         }
-
-        // MOUNT ENGINE IN VAULT
-        const { relativeMountPoint } = await vault.api.mountNewEngine(req.user, engineType);
-
+        console.log(engineType);
         switch(engineType) {
             case "kv":
-                engineInfo = createKVEngine(engineName, engineType, relativeMountPoint);
+                engineInfo = createKVEngine(autoEngName, engineType);
+                console.log(engineInfo);
                 break;
             case "aws":
-                engineInfo = createAWSEngine(engineName, engineType, relativeMountPoint, accountName);
+                engineInfo = createAWSEngine(autoEngName, engineType, autoEngName, accountName);
                 break;
             case "ssh":
-                engineInfo = createSSHEngine(engineName, engineType, relativeMountPoint, accountName, CA_Configurations);
+                engineInfo = createSSHEngine(autoEngName, engineType, autoEngName, accountName, CA_Configurations);
                 break;
         }
 
@@ -40,7 +38,6 @@ exports.createNewEngine = async (req, res) => {
             { _id: req.user._id },
             { $push: { engines: engineInfo } }
         )
-
         return res.status(200).send("Successfully mounted new engine")
     } catch(e) {
         return res.status(400).send(e);
