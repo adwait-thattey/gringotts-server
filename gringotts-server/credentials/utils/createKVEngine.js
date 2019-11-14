@@ -1,6 +1,6 @@
 const config = require('../../config');
 
-module.exports = (engineType, mountPoint) => (
+module.exports = (mountPoint, engineType) => (
     {
         name: mountPoint,
         engineType,

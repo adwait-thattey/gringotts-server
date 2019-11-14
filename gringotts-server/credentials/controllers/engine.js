@@ -14,21 +14,16 @@ exports.getCredEngine = async (req, res) => {
 
 exports.addCustomCategory = async (req, res) => {
     const engineName = req.params.engineName;
-
     const categoryName = req.body.categoryName;
-    const name = req.body.name;
 
     const dataObj = {
         name: categoryName,
-        name,
-        creds: []
+        creds: [],
     };
 
     try {
-
         const response = await User.findOne(
-            { engines: { $elemMatch: { name: "kv2" } } },
-            { "engines.$.categories": 1 }
+            { _id: req.user._id, "engines.name": engineName },
         );
 
         const duplicates = response.engines[0].categories.find(category => category.name === categoryName);
@@ -89,7 +84,7 @@ exports.deleteCategory = async (req, res) => {
 exports.getCreds = async (req, res) => {
     const engineName = req.params.engineName;
     const categoryName = req.params.categoryName;
-    const credName = req.body.credName;
+    const credName = req.params.credName;
 
     try {
         const userInfo = await User.findOne(
@@ -102,13 +97,16 @@ exports.getCreds = async (req, res) => {
             return res.status(404).send("No category with this name was found");
         }
 
-        const { vaultPath } = category.creds.find(cred => cred.credName === credName);
-        if (!vaultPath) {
-            return res.status(404).send("No credentials found");
-        }
+        // const { vaultPath } = category.creds.find(cred => cred.credName === credName);
+        // if (!vaultPath) {
+        //     return res.status(404).send("No credentials found");
+        // }
+
+        const vaultPath = `${engineName}/${categoryName}/${credName}`;
 
         // user, uri, type, payload, customHeaders, appendPath=true
-        const { data } = await vault.makeVaultRequest(req.user, vaultPath, "GET");
+        console.log(vaultPath);
+        const { data } = await vault.makeVaultRequest(req.user, vaultPath, "GET", "kv");
 
         return res.status(200).json({ data });
     } catch(e) {
@@ -147,19 +145,21 @@ exports.createCreds = async (req, res) => {
         if (duplicateCred) {
             return res.status(400).send("Given Cred Name already exists, choose another one");
         }
-
         const credObj = createCredsObj(userInfo.engines[0].engineType, {
             engineName, categoryName, credName, phone
         });
 
-        const { data } = await vault.makeVaultRequest(req.user, vaultPath, "POST");
+        const vaultPath = `${engineName}/${categoryName}/${credName}`;
+
+        // user, uri, type, payload, customHeaders, appendPath=true
+        const { data } = await vault.makeVaultRequest(req.user, vaultPath, "POST", { [credName]: credValue } );
 
         await User.updateOne (
             { "_id": req.user._id }, 
             { $push: { "engines.$[engine].categories.$[category].creds": credObj }}, 
             { "arrayFilters": [{"engine.name": engineName}, { "category.name": categoryName }]}
         )
-
+        console.log(data);
         res.status(200).send("Mast Mast");
     } catch (e) {
         return res.status(500).send(e);

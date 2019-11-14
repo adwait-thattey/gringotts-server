@@ -7,12 +7,8 @@ const { addCustomCategory, deleteCategory,
 router.post('/category/:engineName', addCustomCategory);
 router.delete('/category/:engineName', deleteCategory);
 
-router.delete('/secret/:engineName/:categoryName',(req, res, next) => {
-    console.log(req.user);
-    console.log('hi');
-    next();
-} ,removeCreds)
+router.delete('/secret/:engineName/:categoryName', removeCreds)
 router.post('/secret/:engineName/:categoryName', createCreds)
-router.get('/secret/:engineName/:categoryName', getCreds);
+router.get('/secret/:engineName/:categoryName/:credName', getCreds);
 
 module.exports = router;
