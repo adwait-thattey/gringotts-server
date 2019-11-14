@@ -218,26 +218,26 @@ exports.mountNewEngine = async (user, type) => {
     }
 }
 
-exports.makeVaultRequest = async (user, uri, type, payload, customHeaders, appendPath=true ) => {
-    type = type.toLowerCase();
+exports.makeVaultRequest = async (user, uri, requestType, engineType, payload, customHeaders, appendPath=true ) => {
+    requestType = requestType.toLowerCase();
+    engineType = engineType.toLowerCase();
 
     let vaultToken = localStorage.fetchToken(user.username);
     if (!vaultToken) {
         vaultToken = await utils.getToken(user);
     }
-
     let res;
-    let relativeUserEnginePath = `gringotts-user/${user.username}/`;
+    let relativeUserEnginePath = `gringotts-user/${user.username}/${engineType}/`;
     let finalURL = config.vault.host;
     if (appendPath) {
         finalURL = url.resolve(finalURL, relativeUserEnginePath);
     }
     finalURL = url.resolve(finalURL, uri);
-
+    console.log(finalURL);
     try {
         res = await axios({
             url: finalURL,
-            method: type,
+            method: requestType,
             data: payload,
             headers: {
                 "X-Vault-Token": vaultToken,
