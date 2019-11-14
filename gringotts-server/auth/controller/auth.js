@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const vault = require('../../vault');
 const User = require('../model/user');
 
-const {VaultError} = vault.errors;
+const { VaultError } = vault.errors;
 
 exports.register = async (req, res) => {
     const username = req.body.username;
@@ -29,25 +29,23 @@ exports.register = async (req, res) => {
 
     try {
         await user.save();
-    } catch (e) {
-        res.status(400).json(e);
-    }
-    // try {
-    //     await vault.api.createUser(user)
-    // } catch (err) {
-    //     if( err instanceof vault.errors.VaultError) {
-    //         if (err instanceof vault.errors.VaultInternalError ) {
-    //             res.status(500).json({
-    //                 "message": "Internal Server Error",
-    //             })
-    //         }
+        await vault.api.createUser(user);
 
-    //         res.status(err.status || 500).json({
-    //             "message": err.message
-    //         })
-    //     }
-    // }
-    res.status(201).json({ success: "User successfully created" });
+        res.status(201).json({ success: "User successfully created" });
+    } catch (err) {
+        if (err instanceof vault.errors.VaultError) {
+            if (err instanceof vault.errors.VaultInternalError) {
+                res.status(500).json({
+                    "message": "Internal Server Error",
+                })
+            }
+
+            res.status(err.status || 500).json({
+                "message": err.message
+            })
+        }
+        res.status(500).send(e);
+    }
 }
 
 exports.login = async (req, res) => {
@@ -70,7 +68,7 @@ exports.login = async (req, res) => {
         const token = jwt.sign({ _id: user._id }, config.TOKEN_SECRET, { expiresIn: 3600 });
         res.header('auth-token', token).send(token);
 
-    } catch(e) {
+    } catch (e) {
         return res.status(400).send(e);
     }
 }
