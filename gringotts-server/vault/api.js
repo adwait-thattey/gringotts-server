@@ -236,6 +236,40 @@ const mountNewAWSEngine = async (user, name) => {
     }
 };
 
+const mountNewSSHEngine = async (user, name) => {
+    let res;
+    try {
+        res = await axios.post(
+            url.resolve(config.vault.host, `sys/mounts/gringotts-user/${user.username}/ssh/${name}`),
+            {
+                type: "ssh",
+                description: "A new SSH engine for User " + user.username
+            },
+            {
+                headers: rootHeaders,
+                validateStatus: false
+            }
+
+        )
+    } catch (err) {
+        vaultErrorHandler.handleErrorFromError(err)
+    }
+
+    // console.log(res);
+    vaultErrorHandler.handleErrorFromResponse(res);
+
+    if (res.status === 204) {
+        return {
+            type: "ssh",
+            relativeMountPoint: name,
+            absoluteMountPoint: `/gringotts-user/${user.username}/ssh/${name}`
+        }
+    }
+    else {
+        throw new errors.VaultError("Some error occurred during mounting new engine")
+    }
+};
+
 exports.mountNewEngine = async (user, type) => {
     // get list of existing engines on path
     let engPrefix = "eng";
@@ -256,6 +290,7 @@ exports.mountNewEngine = async (user, type) => {
         case "aws":
             return await mountNewAWSEngine(user, newEngineName);
         case "ssh":
+            return await mountNewSSHEngine(user, newEngineName);
         case "azure": {
             console.log("Not configured yet");
             throw new errors.VaultError("Engine APIs not configured yet")
