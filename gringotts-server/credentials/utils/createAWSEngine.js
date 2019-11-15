@@ -1,11 +1,9 @@
 const config = require('../../config');
 
-module.exports = (verboseName, engineType, mountPoint, accountName) => (
+module.exports = (engineName, engineType) => (
     {
-        verboseName,
+        name:engineName
         engineType,
-        mountPoint,
-        accountName,
         createdAt: new Date(),
         roles : [],
     }

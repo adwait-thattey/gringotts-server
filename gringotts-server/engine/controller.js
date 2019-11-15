@@ -27,7 +27,7 @@ exports.createNewEngine = async (req, res) => {
                 console.log(engineInfo);
                 break;
             case "aws":
-                engineInfo = createAWSEngine(autoEngName, engineType, autoEngName, accountName);
+                engineInfo = createAWSEngine(autoEngName, engineType);
                 break;
             case "ssh":
                 engineInfo = createSSHEngine(autoEngName, engineType, autoEngName, accountName, CA_Configurations);
