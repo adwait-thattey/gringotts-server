@@ -161,6 +161,9 @@ exports.getMountedEngines = async (user, type) => {
     vaultErrorHandler.handleErrorFromResponse(res);
 
     let enginePaths = Object.keys(res.data);
+
+    if (!type) return enginePaths;
+
     enginePaths = enginePaths.filter(
         path => path.startsWith(`gringotts-user/${user.username}/${type}`)
     );
