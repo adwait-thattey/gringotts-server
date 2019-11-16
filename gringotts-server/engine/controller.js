@@ -5,7 +5,6 @@ const User = require('../auth/model/user');
 exports.createNewEngine = async (req, res) => {
     const engineType = req.params.engine_type;
     const CA_Configurations = req.body.CA_Configurations;
-    const accountName = req.body.accountName;
 
     if (!engineType) return res.status(400).send("Engine Type not selected");
     
@@ -17,17 +16,17 @@ exports.createNewEngine = async (req, res) => {
         
         // MOUNT ENGINE IN VAULT
         const { relativeMountPoint:autoEngName } = await vault.api.mountNewEngine(req.user, engineType);
+        
         if (verboseNames.includes(autoEngName)) {
             return res.status(400).send("Given engine name already exists");
         }
-        console.log(engineType);
+
         switch(engineType) {
             case "kv":
                 engineInfo = createKVEngine(autoEngName, engineType);
-                console.log(engineInfo);
                 break;
             case "aws":
-                engineInfo = createAWSEngine(autoEngName, engineType, autoEngName, accountName);
+                engineInfo = createAWSEngine(autoEngName, engineType);
                 break;
             case "ssh":
                 engineInfo = createSSHEngine(autoEngName, engineType, autoEngName, accountName, CA_Configurations);
