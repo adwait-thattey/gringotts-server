@@ -231,6 +231,7 @@ exports.makeVaultRequest = async (user, uri, requestType, engineType, payload, c
     let finalURL = config.vault.host;
     if (appendPath) {
         finalURL = url.resolve(finalURL, relativeUserEnginePath);
+        console.log(finalURL)
     }
     finalURL = url.resolve(finalURL, uri);
     console.log(finalURL);

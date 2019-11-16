@@ -57,6 +57,15 @@ class VaultPermissionDeniedError extends VaultInternalError {
     }
 }
 
+class VaultInvalidRequestError extends VaultError {
+    constructor(message, data) {
+        console.log(data)
+        super(message || "Incorrect Password or user does not exist", data)
+
+        this.status = 400;
+    }
+}
+
 module.exports = {
     VaultError: VaultError,
     VaultInternalError: VaultInternalError,
@@ -65,5 +74,6 @@ module.exports = {
     VaultUserExistsError: VaultUserExistsError,
     VaultIncorrectCredentialsError: VaultIncorrectCredentialsError,
     VaultNotFoundError: VaultNotFoundError,
-    VaultPermissionDeniedError: VaultPermissionDeniedError
+    VaultPermissionDeniedError: VaultPermissionDeniedError,
+    VaultInvalidRequestError: VaultInvalidRequestError
 };
