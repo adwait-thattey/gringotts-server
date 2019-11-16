@@ -69,6 +69,7 @@ exports.login = async (req, res) => {
         res.header('auth-token', token).send(token);
 
     } catch (e) {
+        console.log(e);
         return res.status(400).send(e);
     }
 }
