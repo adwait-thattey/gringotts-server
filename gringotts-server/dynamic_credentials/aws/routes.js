@@ -1,7 +1,8 @@
 const router = require('express').Router();
+const { configureAWSEngine, addNewRole, genNewUser } = require('./controller');
 
-const { configureAWSEngine,add_new_role,gen_new_user } = require('./controller');
 router.post('/:engine_name/config', configureAWSEngine);
-router.post('/:engine_name/add_new_role', add_new_role);
-router.post('/:engine_name/:role_name/user', gen_new_user);
+router.post('/:engine_name/add_new_role', addNewRole);
+router.post('/:engine_name/:role_name/user', genNewUser);
+
 module.exports = router;
