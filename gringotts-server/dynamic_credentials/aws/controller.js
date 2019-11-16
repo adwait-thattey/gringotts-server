@@ -65,8 +65,6 @@ exports.addNewRole = async (req, res) => {
     const engineName = req.params.engine_name;
     const roleName = req.body.roleName;
 
-    console.log(req.user);
-
     const payload_data = {
         "credential_type": "iam_user",
         "policy_document": JSON.stringify(policies.EC2FullAccess)

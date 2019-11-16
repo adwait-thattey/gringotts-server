@@ -175,3 +175,19 @@ exports.removeCreds = async (req, res) => {
         return res.status(500).send(e);
     }
 }
+
+exports.getSpecificEngine = async (req, res) => {
+    const engineName = req.params.engine_name;
+    console.log(engineName);
+
+    try {
+        const userInfo = await User.findOne(
+            { _id: req.user._id, "engines.name": engineName, "engines.engineType": "kv" },
+            { "engines.$": 1 }
+        )
+        
+        return res.status(200).json({ userInfo });
+    } catch(e) {
+        return res.status(500).send(e);
+    }
+}
