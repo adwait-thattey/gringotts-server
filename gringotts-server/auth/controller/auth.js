@@ -44,7 +44,7 @@ exports.register = async (req, res) => {
                 "message": err.message
             })
         }
-        res.status(500).send(e);
+        res.status(500).send(err);
     }
 }
 
@@ -69,6 +69,7 @@ exports.login = async (req, res) => {
         res.header('auth-token', token).send(token);
 
     } catch (e) {
+        console.log(e);
         return res.status(400).send(e);
     }
 }

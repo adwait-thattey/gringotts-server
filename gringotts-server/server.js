@@ -2,6 +2,7 @@ const config = require('./config');
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 const app = express();
 dotenv.config();
@@ -29,6 +30,7 @@ app.use(express.json());
 
 // Add Auth Token
 app.use(addToken);
+app.use(cors());
 
 // Route middlewares
 app.use('/api/auth', authRoutes);
