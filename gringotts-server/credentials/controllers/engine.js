@@ -170,7 +170,6 @@ exports.removeCreds = async (req, res) => {
             { $pull: { "engines.$[engine].categories.$[category].creds": { "credName": credName } } },
             { arrayFilters: [ { "engine.name": engineName }, { "category.name": categoryName } ] }
         )
-
         return res.status(200).send("Creds successfully removed")
     } catch(e) {
         return res.status(500).send(e);
