@@ -8,7 +8,7 @@ router.post('/category/:engineName', addCustomCategory);
 router.delete('/category/:engineName', deleteCategory);
 
 router.delete('/secret/:engineName/:categoryName', removeCreds)
-router.post('/secret/:engineName/:categoryName', createCreds)
-router.get('/secret/:engineName/:categoryName/:credName', getCreds);
+router.post('/secret/:engineName/:engineType/:categoryName', createCreds)
+router.get('/secret/:engineName/:categoryName', getCreds);
 
 module.exports = router;

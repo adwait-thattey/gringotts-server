@@ -44,7 +44,7 @@ exports.register = async (req, res) => {
                 "message": err.message
             })
         }
-        res.status(500).send(e);
+        res.status(500).send(err);
     }
 }
 
