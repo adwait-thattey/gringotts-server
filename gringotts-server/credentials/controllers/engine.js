@@ -159,7 +159,7 @@ exports.createCreds = async (req, res) => {
             { $push: { "engines.$[engine].categories.$[category].creds": credObj }}, 
             { "arrayFilters": [{"engine.name": engineName}, { "category.name": categoryName }]}
         )
-        console.log(data);
+
         res.status(200).send("Mast Mast");
     } catch (e) {
         return res.status(500).send(e);

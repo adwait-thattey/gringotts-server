@@ -20,7 +20,7 @@ exports.createNewEngine = async (req, res) => {
         if (verboseNames.includes(autoEngName)) {
             return res.status(400).send("Given engine name already exists");
         }
-        console.log(engineType);
+
         switch(engineType) {
             case "kv":
                 engineInfo = createKVEngine(autoEngName, engineType);
