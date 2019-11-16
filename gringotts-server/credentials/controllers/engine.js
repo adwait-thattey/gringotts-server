@@ -77,8 +77,6 @@ exports.deleteCategory = async (req, res) => {
     }
 }
 
-
-
 exports.getCreds = async (req, res) => {
     const engineName = req.params.engineName;
     const categoryName = req.params.categoryName;

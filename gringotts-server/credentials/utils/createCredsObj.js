@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 module.exports = (credType, { engineName, categoryName, credName, providerName }) => {
     let dataObj = {
-        credName: mongoose.Types.ObjectId(),
+        _id: mongoose.Types.ObjectId(),
+        key: credName,
         createdOn: new Date(),
         vaultPath: `/kv/${engineName}/${categoryName}/${credName}`,
         providerName
