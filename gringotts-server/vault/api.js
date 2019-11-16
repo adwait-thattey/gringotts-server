@@ -304,17 +304,18 @@ exports.mountNewEngine = async (user, type) => {
 exports.makeVaultRequest = async (user, uri, requestType, engineType, payload, customHeaders, appendPath=true ) => {
     requestType = requestType.toLowerCase();
     engineType = engineType.toLowerCase();
-
+    console.log('hello in api of make vault req');
     let vaultToken = localStorage.fetchToken(user.username);
     if (!vaultToken) {
         vaultToken = await utils.getToken(user);
     }
+
     let res;
     let relativeUserEnginePath = `gringotts-user/${user.username}/${engineType}/`;
+      
     let finalURL = config.vault.host;
     if (appendPath) {
         finalURL = url.resolve(finalURL, relativeUserEnginePath);
-        console.log(finalURL)
     }
     finalURL = url.resolve(finalURL, uri);
     console.log(finalURL);

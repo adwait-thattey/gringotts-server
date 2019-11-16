@@ -37,7 +37,6 @@ exports.createNewEngine = async (req, res) => {
 
         return res.status(200).send("Successfully mounted new engine")
     } catch (e) {
-        console.log(e);
         return res.status(400).send(e);
     }
 }
@@ -53,13 +52,15 @@ exports.getAllEngines = async (req, res) => {
 
             if (engine.engineType === "kv") {
                 engine.categories.map(category => {
+                    console.log(category.creds.length);
                     credCount += category.creds.length;
                 })
                 temp = { categories: engine.categories }
 
             } else if (engine.engineType === "aws") {
                 engine.roles.map(role => {
-                    credCount += role.dynamicCreds.length;
+                    console.log(role);
+                    credCount += role.generatedCreds.length;
                 })
                 temp = { categories: engine.roles }
             }

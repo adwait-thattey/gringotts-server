@@ -30,8 +30,8 @@ exports.configureAWSEngine = async (req, res) => {
     }
 
     const payload_data = {
-        accessKey,
-        secretKey
+        "access_key": accessKey,
+        "secret_key": secretKey
     };
 
     var engine_check_status = await checkEngineExists(eng_name);
@@ -63,7 +63,9 @@ exports.configureAWSEngine = async (req, res) => {
 exports.addNewRole = async (req, res) => {
 
     const engineName = req.params.engine_name;
-    const roleName = req.body.role_name;
+    const roleName = req.body.roleName;
+
+    console.log(req.user);
 
     const payload_data = {
         "credential_type": "iam_user",
@@ -82,8 +84,7 @@ exports.addNewRole = async (req, res) => {
                 roleName,
                 generatedCreds: []
             }
-
-            User.updateOne(
+            await User.updateOne(
                 { _id: req.user._id, "engines.name": engineName },
                 {
                     $push: { "engines.$.roles": dataObj }
@@ -93,7 +94,7 @@ exports.addNewRole = async (req, res) => {
             errorHandler.handleErrorFromError(err)
         }
 
-        errorHandler.handleErrorFromResponse(vaultRes)
+        // errorHandler.handleErrorFromResponse(vaultRes)
         res.status(201).json({ "message": "new role created successfully" });
     }
     else {
@@ -122,8 +123,8 @@ exports.genNewUser = async (req, res) => {
 
             await User.updateOne(
                 { "_id": req.user._id },
-                { $push: { "engines.$[engine].roles.$[role].creds": credObj } },
-                { "arrayFilters": [{ "engine.name": engineName }, { "role.role_name": roleName }] }
+                { $push: { "engines.$[engine].roles.$[role].generatedCreds": credObj } },
+                { "arrayFilters": [{ "engine.name": engineName }, { "role.roleName": roleName }] }
             )
         } catch (err) {
             errorHandler.handleErrorFromError(err)
