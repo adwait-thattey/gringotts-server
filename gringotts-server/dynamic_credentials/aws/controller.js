@@ -19,7 +19,7 @@ const configureEngine = engName => {
 
 exports.configureAWSEngine = async (req, res) => {
 
-    const eng_name = req.params.engine_name;
+    const engName = req.params.engine_name;
 
     const accessKey = req.body.accessKey;
     const secretKey = req.body.secretKey;
@@ -34,16 +34,16 @@ exports.configureAWSEngine = async (req, res) => {
         "secret_key": secretKey
     };
 
-    var engine_check_status = await checkEngineExists(eng_name);
+    var engine_check_status = await checkEngineExists(engName);
 
     if (engine_check_status) {
         let vaultRes;
         try {
-            vaultRes = await vault.api.makeVaultRequest(req.user, `${eng_name}/config/root`, "POST", "aws", payload_data);
+            vaultRes = await vault.api.makeVaultRequest(req.user, `${engName}/config/root`, "POST", "aws", payload_data);
 
-            User.updateOne(
-                { _id: req.user._id },
-                { $set: { accountName } }
+            await User.updateOne(
+                { _id: req.user._id, "engines.name": engName },
+                { $set: { "engines.$.accountName": accountName, "engines.$.flag": 1 } }
             )
 
         } catch (err) {
