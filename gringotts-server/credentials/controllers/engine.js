@@ -81,28 +81,25 @@ exports.getCreds = async (req, res) => {
     const engineName = req.params.engineName;
     const categoryName = req.params.categoryName;
     const credName = req.params.credName;
-    console.log(1);
+
+    console.log(engineName, categoryName, credName);
+
     try {
         const userInfo = await User.findOne(
             { _id: req.user._id, "engines.name": engineName },
             { "engines.$.categories": 1 }
         )
-        console.log(2);
 
         const category = userInfo.engines[0].categories.find(category => category.name === categoryName);
         if (!category) {
             return res.status(404).send("No category with this name was found");
         }
 
-        console.log(3);
         const vaultPath = `${engineName}/${categoryName}/${credName}`;
-        console.log(4);
 
         // user, uri, type, payload, customHeaders, appendPath=true
-        const { info } = await vault.makeVaultRequest(req.user, vaultPath, "GET", "kv");
-        console.log(5);
-
-        return res.status(200).json({ info });
+        const { data } = await vault.makeVaultRequest(req.user, vaultPath, "GET", "kv");
+        return res.status(200).json({ data: data.data[credName] });
     } catch(e) {
         res.status(500).send(e);
     }
@@ -120,7 +117,7 @@ exports.createCreds = async (req, res) => {
     // For social_media phone may be needed field
     const phone = req.body.phone;
     try {
-        // Finding the engine
+        Finding the engine
         const userInfo = await User.findOne(
             { "_id": req.user._id, "engines.name": engineName },
             { "engines.$.categories": 1 }
