@@ -80,25 +80,29 @@ exports.deleteCategory = async (req, res) => {
 exports.getCreds = async (req, res) => {
     const engineName = req.params.engineName;
     const categoryName = req.params.categoryName;
-    const credName = req.body.credName;
-
+    const credName = req.params.credName;
+    console.log(1);
     try {
         const userInfo = await User.findOne(
             { _id: req.user._id, "engines.name": engineName },
             { "engines.$.categories": 1 }
         )
+        console.log(2);
 
         const category = userInfo.engines[0].categories.find(category => category.name === categoryName);
         if (!category) {
             return res.status(404).send("No category with this name was found");
         }
 
+        console.log(3);
         const vaultPath = `${engineName}/${categoryName}/${credName}`;
+        console.log(4);
 
         // user, uri, type, payload, customHeaders, appendPath=true
-        const { data } = await vault.makeVaultRequest(req.user, vaultPath, "GET", "kv");
+        const { info } = await vault.makeVaultRequest(req.user, vaultPath, "GET", "kv");
+        console.log(5);
 
-        return res.status(200).json({ data });
+        return res.status(200).json({ info });
     } catch(e) {
         res.status(500).send(e);
     }
@@ -115,13 +119,13 @@ exports.createCreds = async (req, res) => {
 
     // For social_media phone may be needed field
     const phone = req.body.phone;
-
     try {
         // Finding the engine
         const userInfo = await User.findOne(
-            { "engines.name": engineName },
+            { "_id": req.user._id, "engines.name": engineName },
             { "engines.$.categories": 1 }
         )
+
         if (userInfo.engines.length === 0) {
             return res.status(404).send("No engine with this name was found");
         }
@@ -153,7 +157,7 @@ exports.createCreds = async (req, res) => {
             { "arrayFilters": [{"engine.name": engineName}, { "category.name": categoryName }]}
         )
 
-        res.status(200).send("Credential Successfully added");
+        res.status(200).json({ success: "Credential Successfully added" });
     } catch (e) {
         console.log(e);
         return res.status(500).send(e);
@@ -178,14 +182,15 @@ exports.removeCreds = async (req, res) => {
 
 exports.getSpecificEngine = async (req, res) => {
     const engineName = req.params.engine_name;
-    console.log(engineName);
 
     try {
         const userInfo = await User.findOne(
             { _id: req.user._id, "engines.name": engineName, "engines.engineType": "kv" },
             { "engines.$": 1 }
         )
-        
+        console.log(userInfo);
+        if (!userInfo) return res.status(404).json({ err: "No kv engine with given name found" })
+
         return res.status(200).json({ userInfo });
     } catch(e) {
         return res.status(500).send(e);

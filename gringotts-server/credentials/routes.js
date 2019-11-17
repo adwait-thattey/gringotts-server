@@ -9,7 +9,7 @@ router.delete('/category/:engineName', deleteCategory);
 
 router.delete('/secret/:engineName/:categoryName', removeCreds)
 router.post('/secret/:engineName/:engineType/:categoryName', createCreds)
-router.get('/secret/:engineName/:categoryName', getCreds);
+router.get('/secret/:engineName/:categoryName/:credName', getCreds);
 
 router.get('/:engine_name', getSpecificEngine);
 
