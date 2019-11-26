@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { addCustomCategory, deleteCategory,
+const { addCustomCategory, deleteCategory, getSpecificEngine,
     createCreds, removeCreds, getCreds } = require('./controllers/engine');
 
 // router.get('/engines', );
@@ -8,7 +8,9 @@ router.post('/category/:engineName', addCustomCategory);
 router.delete('/category/:engineName', deleteCategory);
 
 router.delete('/secret/:engineName/:categoryName', removeCreds)
-router.post('/secret/:engineName/:categoryName', createCreds)
+router.post('/secret/:engineName/:engineType/:categoryName', createCreds)
 router.get('/secret/:engineName/:categoryName/:credName', getCreds);
+
+router.get('/:engine_name', getSpecificEngine);
 
 module.exports = router;

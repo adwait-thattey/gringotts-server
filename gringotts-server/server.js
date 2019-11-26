@@ -2,6 +2,7 @@ const config = require('./config');
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 const app = express();
 dotenv.config();
@@ -10,6 +11,7 @@ dotenv.config();
 const authRoutes = require('./auth/routes');
 const engineRoutes = require('./engine/routes');
 const credentialRoutes = require('./credentials/routes');
+const dynamicRoutes = require('./dynamic_credentials/routes');
 
 // Middleware to authenticate token and add req.user
 const addToken = require('./middlewares/addAuthToken');
@@ -28,10 +30,11 @@ app.use(express.json());
 
 // Add Auth Token
 app.use(addToken);
+app.use(cors());
 
 // Route middlewares
 app.use('/api/auth', authRoutes);
 app.use('/api/engine', engineRoutes);
 app.use('/api/creds', credentialRoutes);
-
+app.use('/api/dynamic',dynamicRoutes);
 app.listen(config.port, () => console.log(`Server running on ${config.port}`));

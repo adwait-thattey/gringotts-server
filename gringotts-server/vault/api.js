@@ -161,6 +161,9 @@ exports.getMountedEngines = async (user, type) => {
     vaultErrorHandler.handleErrorFromResponse(res);
 
     let enginePaths = Object.keys(res.data);
+
+    if (!type) return enginePaths;
+
     enginePaths = enginePaths.filter(
         path => path.startsWith(`gringotts-user/${user.username}/${type}`)
     );
@@ -301,13 +304,15 @@ exports.mountNewEngine = async (user, type) => {
 exports.makeVaultRequest = async (user, uri, requestType, engineType, payload, customHeaders, appendPath=true ) => {
     requestType = requestType.toLowerCase();
     engineType = engineType.toLowerCase();
-
+    console.log('hello in api of make vault req');
     let vaultToken = localStorage.fetchToken(user.username);
     if (!vaultToken) {
         vaultToken = await utils.getToken(user);
     }
+
     let res;
     let relativeUserEnginePath = `gringotts-user/${user.username}/${engineType}/`;
+      
     let finalURL = config.vault.host;
     if (appendPath) {
         finalURL = url.resolve(finalURL, relativeUserEnginePath);

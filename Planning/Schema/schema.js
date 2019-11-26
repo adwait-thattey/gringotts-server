@@ -72,25 +72,21 @@ schema =  {
                 aws: [
                     {
                         id: "<mongo id object>",
-                        verboseName: "AWS",
-                        type: "aws",
-                        vaultURL: "IP Add of the vault",
-                        mountPoint: "<String/URL>",
-
+                        engineName:"",
                         accountName: "",
 
                         roles : [
                             {
                                 id: "<mongo id object>",
                                 verboseName: "<String>",
-                                path: "",
+                                name: "",
                                 
                                 generatedCredentials : [
                                     {
                                         // actual credentuials are not stored. Only path is stored
                                         id: "<mongo id object>",
                                         status: "<Boolean>",
-                                        credPath: "<String>",
+                                        accessKey:"<String>",
                                         generatedOn: "<Date Time Object>",
                                         expiresOn: "<Date Time Object>"
                                     }
