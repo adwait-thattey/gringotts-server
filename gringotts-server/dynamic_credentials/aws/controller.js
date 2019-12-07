@@ -64,13 +64,26 @@ exports.addNewRole = async (req, res) => {
 
     const engineName = req.params.engine_name;
     const roleName = req.body.roleName;
-
+    const policyType = req.body.policyName;
+    let policy_doc =null;
     console.log(req.user);
-
+    switch(policyType){
+        case "EC2":
+            policy_doc = JSON.stringify(policies.EC2FullAccess);
+            break;
+        case "RDS":
+            policy_doc = JSON.stringify(policies.rdsFullAccess);
+            break;
+        case "S3":
+            policy_doc = JSON.stringify(policies.S3FullAccess);
+            break;
+        case "Lambda":
+            policy_doc = JSON.stringify(policies.lambdaFullAccess);
+            break;
+    }
     const payload_data = {
         "credential_type": "iam_user",
-        "policy_document": JSON.stringify(policies.EC2FullAccess)
-    }
+        "policy_document": policy_doc    }
 
     var engine_check_status = await checkEngineExists(engineName);
 
