@@ -12,6 +12,7 @@ const authRoutes = require('./auth/routes');
 const engineRoutes = require('./engine/routes');
 const credentialRoutes = require('./credentials/routes');
 const dynamicRoutes = require('./dynamic_credentials/routes');
+const sshRoutes = require('./ssh/routes');
 
 // Middleware to authenticate token and add req.user
 const addToken = require('./middlewares/addAuthToken');
@@ -37,4 +38,5 @@ app.use('/api/auth', authRoutes);
 app.use('/api/engine', engineRoutes);
 app.use('/api/creds', credentialRoutes);
 app.use('/api/dynamic',dynamicRoutes);
+app.use('/api/ssh', sshRoutes);
 app.listen(config.port, () => console.log(`Server running on ${config.port}`));

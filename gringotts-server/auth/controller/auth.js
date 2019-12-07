@@ -52,12 +52,13 @@ exports.login = async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
+
     try {
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(401).json({ err: "Email or Password is wrong" });
         }
-
+        console.log("login route");
         // Check if password is correct
         const validPass = await bcrypt.compare(password, user.password);
 
