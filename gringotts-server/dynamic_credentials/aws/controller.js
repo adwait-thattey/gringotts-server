@@ -13,10 +13,6 @@ const checkEngineExists = async eng_name => {
     return true
 }
 
-const configureEngine = engName => {
-    // aws array in user->engines schema. Check if engine with this name exists there. If not, create the object.
-}
-
 exports.configureAWSEngine = async (req, res) => {
 
     const engName = req.params.engine_name;

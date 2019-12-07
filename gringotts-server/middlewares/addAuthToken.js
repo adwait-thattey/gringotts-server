@@ -6,7 +6,13 @@ module.exports = async (req, res, next) => {
     if (!authToken) return next();
     // Removing 'Bearer '
     const decoded = jwt.decode(authToken.substring(7));
-    const user = await User.findById(decoded._id, 'username email _id password');
+    
+    let user;
+    try {
+        user = await User.findById(decoded._id, 'username email _id password');
+    } catch(e) {
+        console.log(e);
+    }
     req.user = user;
     next();
 }

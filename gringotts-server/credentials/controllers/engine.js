@@ -29,7 +29,9 @@ exports.addCustomCategory = async (req, res) => {
         if (response) {
             return res.status(400).send("Category name already exists");
         }
-
+        console.log(engineName);
+        console.log(req.user._id);
+        console.log(dataObj);
         await User.updateOne(
             { _id: req.user._id, "engines.name": engineName },
             {
@@ -38,7 +40,6 @@ exports.addCustomCategory = async (req, res) => {
                 }
             }
         )
-
         return res.status(200).json({
             success: "New category successfully added",
         })

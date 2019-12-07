@@ -6,4 +6,3 @@ exports.EC2FullAccess = {
         "Resource": "*"
     }
 };
-// JSON.stringify(policies.EC2FullAccess)

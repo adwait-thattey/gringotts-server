@@ -7,6 +7,10 @@ exports.createNewEngine = async (req, res) => {
     const CA_Configurations = req.body.CA_Configurations;
     if (!engineType) return res.status(400).send("Engine Type not selected");
 
+    if (engineType === "ssh" && !engineType) {
+        return res.status(400).send("SSH engine requires CA_configuration");
+    }
+
     try {
         let engineInfo;
 
