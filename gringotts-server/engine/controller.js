@@ -66,7 +66,8 @@ exports.getAllEngines = async (req, res) => {
                 health: true,
                 createdOn: engine.createdAt,
                 credCount,
-                ...temp
+                ...temp,
+                ...engine
             })
 
         });
