@@ -3,21 +3,22 @@ const vault = require('../vault');
 const User = require('../auth/model/user');
 
 exports.createNewEngine = async (req, res) => {
+    console.log(req.user);
+    console.log("CREATE ENGINE");
+
+
     const engineType = req.params.engine_type;
     const CA_Configurations = req.body.CA_Configurations;
     if (!engineType) return res.status(400).send("Engine Type not selected");
-
     if (engineType === "ssh" && !engineType) {
         return res.status(400).send("SSH engine requires CA_configuration");
     }
 
     try {
         let engineInfo;
-
         // MOUNT ENGINE IN VAULT
         const { relativeMountPoint: autoEngName } = await vault.api.mountNewEngine(req.user, engineType);
 
-        
         switch (engineType) {
             case "kv":
                 engineInfo = createKVEngine(autoEngName, engineType);
@@ -29,19 +30,20 @@ exports.createNewEngine = async (req, res) => {
                 engineInfo = createSSHEngine(autoEngName, engineType, autoEngName, accountName, CA_Configurations);
                 break;
         }
-
         await User.updateOne(
             { _id: req.user._id },
             { $push: { engines: engineInfo } }
         )
-
-        return res.status(200).send("Successfully mounted new engine")
+        return res.status(200).json({ engineInfo });
     } catch (e) {
+        console.log(e);
         return res.status(400).send(e);
     }
 }
 
 exports.getAllEngines = async (req, res) => {
+    console.log(req.user);
+    console.log("GET ENGINES");
     try {
         const userInfo = await User.findOne({ _id: req.user._id });
         const engineList = [];

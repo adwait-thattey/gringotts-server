@@ -29,9 +29,7 @@ exports.addCustomCategory = async (req, res) => {
         if (response) {
             return res.status(400).send("Category name already exists");
         }
-        console.log(engineName);
-        console.log(req.user._id);
-        console.log(dataObj);
+
         await User.updateOne(
             { _id: req.user._id, "engines.name": engineName },
             {
@@ -120,7 +118,7 @@ exports.createCreds = async (req, res) => {
     try {
         // Finding the engine
         const userInfo = await User.findOne(
-            { "_id": req.user._id, "engines.name": engineName },
+            { "_id": req.user._id, "engines.engineType": engineType, "engines.name": engineName },
             { "engines.$.categories": 1 }
         )
 
@@ -149,8 +147,13 @@ exports.createCreds = async (req, res) => {
         // user, uri, type, payload, customHeaders, appendPath=true
         const { data } = await vault.makeVaultRequest(req.user, vaultPath, "POST", engineType ,{ [credName]: credValue } );
 
+        // let aggregate = User.aggregate();
+        // aggregate.append([{ $unwind: "$engines" }])
+        // aggregate.append([{ $match: { _id: req.user._id, "engines.name": engineName, "engines.engineType": engineType } }])
+        // aggregate.exec()
+
         await User.updateOne (
-            { "_id": req.user._id }, 
+            { $and: [ { _id: req.user._id }, { "engines.engineType": engineType }, { "engines.name": engineName } ] },
             { $push: { "engines.$[engine].categories.$[category].creds": credObj }}, 
             { "arrayFilters": [{"engine.name": engineName}, { "category.name": categoryName }]}
         )
