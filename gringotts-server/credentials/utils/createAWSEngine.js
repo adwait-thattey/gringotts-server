@@ -6,5 +6,6 @@ module.exports = (engineName, engineType) => (
         engineType,
         createdAt: new Date(),
         roles : [],
+        flag: 0
     }
 )

@@ -13,10 +13,6 @@ const checkEngineExists = async eng_name => {
     return true
 }
 
-const configureEngine = engName => {
-    // aws array in user->engines schema. Check if engine with this name exists there. If not, create the object.
-}
-
 exports.configureAWSEngine = async (req, res) => {
 
     const engName = req.params.engine_name;
@@ -100,7 +96,8 @@ exports.addNewRole = async (req, res) => {
             await User.updateOne(
                 { _id: req.user._id, "engines.name": engineName },
                 {
-                    $push: { "engines.$.roles": dataObj }
+                    $push: { "engines.$.roles": dataObj },
+                    "engines.$.flag": 2
                 }
             )
         } catch (err) {
@@ -136,7 +133,9 @@ exports.genNewUser = async (req, res) => {
 
             await User.updateOne(
                 { "_id": req.user._id },
-                { $push: { "engines.$[engine].roles.$[role].generatedCreds": credObj } },
+                { 
+                    $push: { "engines.$[engine].roles.$[role].generatedCreds": credObj }
+                },
                 { "arrayFilters": [{ "engine.name": engineName }, { "role.roleName": roleName }] }
             )
         } catch (err) {

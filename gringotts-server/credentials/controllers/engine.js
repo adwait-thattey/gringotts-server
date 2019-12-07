@@ -38,7 +38,6 @@ exports.addCustomCategory = async (req, res) => {
                 }
             }
         )
-
         return res.status(200).json({
             success: "New category successfully added",
         })
@@ -80,7 +79,9 @@ exports.deleteCategory = async (req, res) => {
 exports.getCreds = async (req, res) => {
     const engineName = req.params.engineName;
     const categoryName = req.params.categoryName;
-    const credName = req.body.credName;
+    const credName = req.params.credName;
+
+    console.log(engineName, categoryName, credName);
 
     try {
         const userInfo = await User.findOne(
@@ -97,8 +98,7 @@ exports.getCreds = async (req, res) => {
 
         // user, uri, type, payload, customHeaders, appendPath=true
         const { data } = await vault.makeVaultRequest(req.user, vaultPath, "GET", "kv");
-
-        return res.status(200).json({ data });
+        return res.status(200).json({ data: data.data[credName] });
     } catch(e) {
         res.status(500).send(e);
     }
@@ -115,13 +115,13 @@ exports.createCreds = async (req, res) => {
 
     // For social_media phone may be needed field
     const phone = req.body.phone;
-
     try {
         // Finding the engine
         const userInfo = await User.findOne(
-            { "engines.name": engineName },
+            { "_id": req.user._id, "engines.engineType": engineType, "engines.name": engineName },
             { "engines.$.categories": 1 }
         )
+
         if (userInfo.engines.length === 0) {
             return res.status(404).send("No engine with this name was found");
         }
@@ -147,13 +147,18 @@ exports.createCreds = async (req, res) => {
         // user, uri, type, payload, customHeaders, appendPath=true
         const { data } = await vault.makeVaultRequest(req.user, vaultPath, "POST", engineType ,{ [credName]: credValue } );
 
+        // let aggregate = User.aggregate();
+        // aggregate.append([{ $unwind: "$engines" }])
+        // aggregate.append([{ $match: { _id: req.user._id, "engines.name": engineName, "engines.engineType": engineType } }])
+        // aggregate.exec()
+
         await User.updateOne (
-            { "_id": req.user._id }, 
+            { $and: [ { _id: req.user._id }, { "engines.engineType": engineType }, { "engines.name": engineName } ] },
             { $push: { "engines.$[engine].categories.$[category].creds": credObj }}, 
             { "arrayFilters": [{"engine.name": engineName}, { "category.name": categoryName }]}
         )
 
-        res.status(200).send("Credential Successfully added");
+        res.status(200).json({ success: "Credential Successfully added" });
     } catch (e) {
         console.log(e);
         return res.status(500).send(e);
@@ -170,8 +175,24 @@ exports.removeCreds = async (req, res) => {
             { $pull: { "engines.$[engine].categories.$[category].creds": { "credName": credName } } },
             { arrayFilters: [ { "engine.name": engineName }, { "category.name": categoryName } ] }
         )
-
         return res.status(200).send("Creds successfully removed")
+    } catch(e) {
+        return res.status(500).send(e);
+    }
+}
+
+exports.getSpecificEngine = async (req, res) => {
+    const engineName = req.params.engine_name;
+
+    try {
+        const userInfo = await User.findOne(
+            { _id: req.user._id, "engines.name": engineName, "engines.engineType": "kv" },
+            { "engines.$": 1 }
+        )
+        console.log(userInfo);
+        if (!userInfo) return res.status(404).json({ err: "No kv engine with given name found" })
+
+        return res.status(200).json({ userInfo });
     } catch(e) {
         return res.status(500).send(e);
     }
