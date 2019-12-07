@@ -23,19 +23,17 @@ exports.configureCA = async (req, res) => {
 
     if (engine_check_status) {
         let vaultRes;
-        // try {
-        //     vaultRes = await vault.api.makeVaultRequest(req.user, `${engName}/config/ca`, "POST", "ssh", payload);
-        //
-        // } catch (err) {
-        //     vaultErrorHandler.handleErrorFromError(err)
-        // }
+        try {
+            vaultRes = await vault.api.makeVaultRequest(req.user, `${engName}/config/ca`, "POST", "ssh", payload);
+        
+        } catch (err) {
+            vaultErrorHandler.handleErrorFromError(err)
+        }
+        // vaultErrorHandler.handleErrorFromResponse(vaultRes);
         const user = await User.updateOne (
-            { _id: mongoose.Types.ObjectId(req.user._id), "engines.name": engName, "engines.engineType": "ssh"},
+            { _id: req.user._id, "engines.name": engName, "engines.engineType": "ssh"},
             { $set: { "engines.$.status": 1 } }
         );
-        console.log(user);
-        // vaultErrorHandler.handleErrorFromResponse(vaultRes);
-
         res.status(201).json({"message": "CA configured successfully"});
     } else {
         res.status(404).json({"message": "Engine not found"});
@@ -126,8 +124,9 @@ exports.configureMachine = async (req, res) => {
         }
 
         await User.updateOne (
-            { _id: mongoose.Types.ObjectId(req.user._id), "engines.name": engName, "engines.engineType": "ssh"},
-            { $push: { "engines.$.roles": roleObj } }
+            { _id: req.user._id},
+            { $push: { "engines.$[engine].roles": roleObj } },
+            { arrayFilters: [ { "engine.engineType": "ssh", "engine.name": engName } ] }
         )
 
     } catch(e) {
@@ -208,15 +207,11 @@ exports.generateKey = async (req, res) => {
             await User.updateOne (
                 { _id: req.user._id },
                 { $push: { "engines.$[engine].roles.$[role].generated_keys": gen_keys } },
-                { arrayFilters: [ { "engine.name": engName }, { "role.verboseName": role } ] }
+                { arrayFilters: [ { "engine.name": engName, "engine.engineType": "ssh" }, { "role.verboseName": role } ] }
             )
         } catch(e) {
 
         }
-
-
-
-
 
         const response_json = {
             "serialNumber": serialNumber,
