@@ -74,3 +74,21 @@ exports.login = async (req, res) => {
         return res.status(400).send(e);
     }
 }
+
+exports.authByFace = async (req, res) => {
+    const secretKey = req.body.key;
+    const email = req.body.email;
+
+    if (secretKey !== "JSsbxcgwgbQHmsOAHBxKyezzXBRtOMCjHKTbsKufTIkIOAtwqHncvkNGrCfOjbqpcWCVPKdzjDzdWlGp") {
+        return res.status(401).send("Unauthorized");
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+        return res.status(401).json({ err: "Email or Password is wrong" });
+    }
+   
+    // Create and assign token
+    const token = jwt.sign({ _id: user._id }, config.TOKEN_SECRET, { expiresIn: 3600 });
+    res.json({ token });
+}

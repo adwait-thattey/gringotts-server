@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 dotenv.config();
@@ -25,11 +26,14 @@ mongoose.connect(
         console.log("connected to db");
     }
 );
+app.use(express.static(__dirname + '/static'));
 
 // Middleware
 app.use(express.json());
-
 // Add Auth Token
+
+
+
 app.use(addToken);
 app.use(cors());
 

@@ -31,9 +31,8 @@ exports.createNewEngine = async (req, res) => {
             { $push: { engines: engineInfo } }
         )
 
-        return res.status(200).send("Successfully mounted new engine")
+        return res.status(200).json({ msg: "Successfully mounted new engine", info: engineInfo})
     } catch (e) {
-        console.log(e)
         return res.status(400).send(e);
     }
 }
@@ -42,7 +41,6 @@ exports.getAllEngines = async (req, res) => {
     try {
         const userInfo = await User.findOne({ _id: req.user._id });
         const engineList = [];
-
         userInfo.engines.map((engine, index) => {
             let credCount = 0;
             let temp;

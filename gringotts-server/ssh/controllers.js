@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const vaultErrorHandler = require('../vault/errorHandler');
 const keygen = require('ssh-keygen');
 const fs = require('fs');
+const path = require('path');
 
 const checkEngineExists = async eng_name => {
     return User.findOne(
@@ -18,6 +19,8 @@ exports.configureCA = async (req, res) => {
     const payload = {
         "generate_signing_key": true
     }
+
+    console.log(req.user);
 
     var engine_check_status = await checkEngineExists(engName);
 
@@ -158,7 +161,9 @@ exports.generateKey = async (req, res) => {
     const default_key_name = `key_${Math.floor((Math.random() * 1000) + 1)}`;
     const actualKeyName = keyName || default_key_name;
     console.log(actualKeyName);
-    var location = __dirname + '/tmp/keys/' + actualKeyName;
+    var location = path.join(__dirname + '/../static/' + actualKeyName);
+    
+    console.log(location);
     let comment = req.user.email;
     let password = keyPassword;
 
@@ -171,17 +176,14 @@ exports.generateKey = async (req, res) => {
         if (err) {
             res.status(500).json({"message": "Some error occurred while generating keys"})
         }
-        console.log("keys created");
 
-        let publicKey = fs.readFileSync(__dirname + `/tmp/keys/${actualKeyName}.pub`, 'utf8');
-        let privateKey = fs.readFileSync(__dirname + `/tmp/keys/${actualKeyName}`, 'utf8');
+        let publicKey = fs.readFileSync(path.join(__dirname + `/../static/${actualKeyName}.pub`), 'utf8');
+        let privateKey = fs.readFileSync(path.join(__dirname + `/../static/${actualKeyName}`), 'utf8');
 
         privateKey = privateKey.split('\n').join('\\n');
         let lines = publicKey.split(' ');
         lines.pop();
         publicKey = lines.join(' ');
-        console.log("Generated Public Key", publicKey);
-
 
         const payload = {
             "name": actualKeyName,
@@ -192,13 +194,12 @@ exports.generateKey = async (req, res) => {
         let vaultRes;
         try {
             vaultRes = await vault.api.makeVaultRequest(req.user, `${engName}/sign/${role}`, "POST", "ssh", payload);
-
         } catch (err) {
             vaultErrorHandler.handleErrorFromError(err)
         }
         vaultErrorHandler.handleErrorFromResponse(vaultRes);
         const signedKey = vaultRes.data.data.signed_key.trim('\n');
-        fs.writeFileSync(__dirname + `/tmp/keys/${actualKeyName}.cer`, signedKey);
+        fs.writeFileSync(path.join(__dirname + `/../static/${actualKeyName}.cer`), signedKey);
         const serialNumber = vaultRes.data.data.serial_number;
 
         try {
@@ -227,8 +228,8 @@ exports.generateKey = async (req, res) => {
             "ttl": "some ttl",
             "message": "Usage: ssh -i private_key -i certificate username@ip"
         };
-
-        res.status(200).json(response_json)
+        res.download(path.join(__dirname + `/../static/${actualKeyName}`));
+        // res.status(200).json(response_json)
         // send a file response with private key and certificate
     })
 }
