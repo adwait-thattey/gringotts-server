@@ -22,6 +22,7 @@ exports.handleErrorFromResponse = (res) => {
 };
 
 exports.handleErrorFromError = (err) => {
+    console.log(err);
     if (err.isAxiosError === true) {
         if (err.code === "ETIMEDOUT" || err.code === "ECONNREFUSED") {
             throw new errors.VaultNotInitialized();

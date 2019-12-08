@@ -34,7 +34,6 @@ exports.configureCA = async (req, res) => {
             { _id: req.user._id, "engines.name": engName, "engines.engineType": "ssh"},
             { $set: { "engines.$.status": 1 } }
         );
-        console.log(user);
 
         res.status(201).json({"message": "CA configured successfully"});
     } else {
