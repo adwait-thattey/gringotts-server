@@ -24,7 +24,7 @@ exports.configureCA = async (req, res) => {
     if (engine_check_status) {
         let vaultRes;
         // try {
-        //     vaultRes = await vault.api.makeVaultRequest(req.user, `${engName}/config/ca`, "POST", "ssh", payload);
+            vaultRes = await vault.api.makeVaultRequest(req.user, `${engName}/config/ca`, "POST", "ssh", payload);
         //
         // } catch (err) {
         //     vaultErrorHandler.handleErrorFromError(err)
@@ -34,7 +34,7 @@ exports.configureCA = async (req, res) => {
             { $set: { "engines.$.status": 1 } }
         );
         console.log(user);
-        // vaultErrorHandler.handleErrorFromResponse(vaultRes);
+        vaultErrorHandler.handleErrorFromResponse(vaultRes);
 
         res.status(201).json({"message": "CA configured successfully"});
     } else {
@@ -52,8 +52,9 @@ exports.getCAPublicKey = async (req, res) => {
     let vaultRes;
     try {
         vaultRes = await vault.api.makeVaultRequest(req.user, `${engName}/public_key`, "GET", "ssh");
-
+        console.log(vaultRes)
     } catch (err) {
+        console.log(err)
         vaultErrorHandler.handleErrorFromError(err)
     }
 
@@ -97,7 +98,7 @@ exports.configureMachine = async (req, res) => {
             }
         ],
         "key_type": "ca",
-        "default_user": "coder",
+        "default_user": "ubuntu",
         "ttl": ttl
     };
 
@@ -109,6 +110,7 @@ exports.configureMachine = async (req, res) => {
         vaultRes = await vault.api.makeVaultRequest(req.user, `${engName}/roles/${roleName}`, "POST", "ssh", payload);
 
     } catch (err) {
+        console.log(err)
         vaultErrorHandler.handleErrorFromError(err)
     }
 
@@ -174,6 +176,7 @@ exports.generateKey = async (req, res) => {
         let publicKey = fs.readFileSync(__dirname + `/tmp/keys/${actualKeyName}.pub`, 'utf8');
         let privateKey = fs.readFileSync(__dirname + `/tmp/keys/${actualKeyName}`, 'utf8');
 
+        privateKey = privateKey.split('\n').join('\\n');
         let lines = publicKey.split(' ');
         lines.pop();
         publicKey = lines.join(' ');
@@ -195,6 +198,7 @@ exports.generateKey = async (req, res) => {
         }
         vaultErrorHandler.handleErrorFromResponse(vaultRes);
         const signedKey = vaultRes.data.data.signed_key.trim('\n');
+        fs.writeFileSync(__dirname + `/tmp/keys/${actualKeyName}.cer`, signedKey);
         const serialNumber = vaultRes.data.data.serial_number;
 
         try {
