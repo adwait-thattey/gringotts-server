@@ -13,7 +13,7 @@ exports.createNewEngine = async (req, res) => {
         // MOUNT ENGINE IN VAULT
         const { relativeMountPoint: autoEngName } = await vault.api.mountNewEngine(req.user, engineType);
 
-        
+        console.log("new engine", autoEngName);
         switch (engineType) {
             case "kv":
                 engineInfo = createKVEngine(autoEngName, engineType);
@@ -22,7 +22,7 @@ exports.createNewEngine = async (req, res) => {
                 engineInfo = createAWSEngine(autoEngName, engineType);
                 break;
             case "ssh":
-                engineInfo = createSSHEngine(autoEngName, engineType, autoEngName, accountName, CA_Configurations);
+                engineInfo = createSSHEngine(autoEngName, engineType, autoEngName);
                 break;
         }
 
@@ -33,6 +33,7 @@ exports.createNewEngine = async (req, res) => {
 
         return res.status(200).send("Successfully mounted new engine")
     } catch (e) {
+        console.log(e)
         return res.status(400).send(e);
     }
 }
