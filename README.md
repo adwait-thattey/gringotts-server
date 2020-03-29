@@ -12,7 +12,7 @@ The features of the application will be:
 * Store all your passwords / credentials or just any data securely.
 * Data is stored in vault, while mappings are stored in node server
 
-### Dynamic Cedentials
+### Dynamic Credentials
 
 * Configure the application with your AWS / GCP / Azure primary credentials. 
 * Generate new username-password or access-keys for your account on the fly.
